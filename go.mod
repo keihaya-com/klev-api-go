@@ -1,4 +1,4 @@
-module github.com/keihaya-com/klev-api
+module github.com/keihaya-com/klev-api-go
 
 go 1.18
 
