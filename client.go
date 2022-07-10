@@ -6,23 +6,33 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
+
+type Config struct {
+	BaseURL string
+	Token   string
+	Client  *http.Client
+}
+
+func NewConfig(token string) Config {
+	return Config{
+		BaseURL: "https://api.klev.dev",
+		Token:   token,
+		Client:  http.DefaultClient,
+	}
+}
 
 type Client struct {
 	baseURL string
 	token   string
+	client  *http.Client
 }
 
-func New(baseURL string) *Client {
-	token := os.Getenv("KLEV_TOKEN")
-	if token == "" {
-		panic("fish> set -x KLEV_TOKEN '$'\nbash> ?export")
-	}
-
+func New(cfg Config) *Client {
 	return &Client{
-		baseURL: baseURL,
-		token:   token,
+		baseURL: cfg.BaseURL,
+		token:   cfg.Token,
+		client:  cfg.Client,
 	}
 }
 
