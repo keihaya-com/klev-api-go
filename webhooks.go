@@ -24,24 +24,24 @@ type WebhookOut struct {
 	Type      string      `json:"type"`
 }
 
-func (k *Client) WebhooksList() ([]WebhookOut, error) {
+func (c *Client) WebhooksList() ([]WebhookOut, error) {
 	var out WebhooksOut
-	err := k.base.Get(fmt.Sprintf("webhooks"), &out)
+	err := c.HTTPGet(fmt.Sprintf("webhooks"), &out)
 	return out.Webhooks, err
 }
 
-func (k *Client) WebhookCreate(in WebhookIn) (WebhookOut, error) {
+func (c *Client) WebhookCreate(in WebhookIn) (WebhookOut, error) {
 	var out WebhookOut
-	err := k.base.Post(fmt.Sprintf("webhooks"), in, &out)
+	err := c.HTTPPost(fmt.Sprintf("webhooks"), in, &out)
 	return out, err
 }
 
-func (k *Client) WebhookGet(webhookID ksuid.KSUID) error {
+func (c *Client) WebhookGet(webhookID ksuid.KSUID) error {
 	var out WebhookOut
-	return k.base.Get(fmt.Sprintf("webhook/%s", webhookID), &out)
+	return c.HTTPGet(fmt.Sprintf("webhook/%s", webhookID), &out)
 }
 
-func (k *Client) WebhookDelete(webhookID ksuid.KSUID) error {
+func (c *Client) WebhookDelete(webhookID ksuid.KSUID) error {
 	var out WebhookOut
-	return k.base.Delete(fmt.Sprintf("webhook/%s", webhookID), &out)
+	return c.HTTPDelete(fmt.Sprintf("webhook/%s", webhookID), &out)
 }

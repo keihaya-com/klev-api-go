@@ -20,24 +20,24 @@ type TokenOut struct {
 	Bearer   string      `json:"bearer,omitempty"`
 }
 
-func (k *Client) TokensList() ([]TokenOut, error) {
+func (c *Client) TokensList() ([]TokenOut, error) {
 	var out TokensOut
-	err := k.base.Get(fmt.Sprintf("tokens"), &out)
+	err := c.HTTPGet(fmt.Sprintf("tokens"), &out)
 	return out.Tokens, err
 }
 
-func (k *Client) TokenCreate(in TokenIn) (TokenOut, error) {
+func (c *Client) TokenCreate(in TokenIn) (TokenOut, error) {
 	var out TokenOut
-	err := k.base.Post(fmt.Sprintf("tokens"), in, &out)
+	err := c.HTTPPost(fmt.Sprintf("tokens"), in, &out)
 	return out, err
 }
 
-func (k *Client) TokenGet(tokenID ksuid.KSUID) error {
+func (c *Client) TokenGet(tokenID ksuid.KSUID) error {
 	var out TokenOut
-	return k.base.Get(fmt.Sprintf("token/%s", tokenID), &out)
+	return c.HTTPGet(fmt.Sprintf("token/%s", tokenID), &out)
 }
 
-func (k *Client) TokenDelete(tokenID ksuid.KSUID) error {
+func (c *Client) TokenDelete(tokenID ksuid.KSUID) error {
 	var out TokenOut
-	return k.base.Delete(fmt.Sprintf("token/%s", tokenID), &out)
+	return c.HTTPDelete(fmt.Sprintf("token/%s", tokenID), &out)
 }

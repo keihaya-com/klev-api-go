@@ -52,7 +52,7 @@ type PostOut struct {
 	NextOffset int64 `json:"next_offset"`
 }
 
-func (k *Client) PublishK(logID ksuid.KSUID, keys []string) error {
+func (c *Client) PublishK(logID ksuid.KSUID, keys []string) error {
 	in := PublishIn{}
 	for _, k := range keys {
 		k := k
@@ -61,10 +61,10 @@ func (k *Client) PublishK(logID ksuid.KSUID, keys []string) error {
 		})
 	}
 	var out PublishOut
-	return k.base.Post(fmt.Sprintf("messages/%s", logID), in, &out)
+	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
 }
 
-func (k *Client) PublishKV(logID ksuid.KSUID, keys []string, values []string) error {
+func (c *Client) PublishKV(logID ksuid.KSUID, keys []string, values []string) error {
 	in := PublishIn{}
 	for i, k := range keys {
 		k := k
@@ -75,10 +75,10 @@ func (k *Client) PublishKV(logID ksuid.KSUID, keys []string, values []string) er
 		})
 	}
 	var out PublishOut
-	return k.base.Post(fmt.Sprintf("messages/%s", logID), in, &out)
+	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
 }
 
-func (k *Client) PublishV(logID ksuid.KSUID, values []string) error {
+func (c *Client) PublishV(logID ksuid.KSUID, values []string) error {
 	in := PublishIn{}
 	for _, v := range values {
 		v := v
@@ -87,23 +87,23 @@ func (k *Client) PublishV(logID ksuid.KSUID, values []string) error {
 		})
 	}
 	var out PublishOut
-	return k.base.Post(fmt.Sprintf("messages/%s", logID), in, &out)
+	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
 }
 
-func (k *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (ConsumeOut, error) {
+func (c *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (ConsumeOut, error) {
 	var out ConsumeOut
-	err := k.base.Get(fmt.Sprintf("messages/%s?offset=%d&len=%d", logID, offset, sz), &out)
+	err := c.HTTPGet(fmt.Sprintf("messages/%s?offset=%d&len=%d", logID, offset, sz), &out)
 	return out, err
 }
 
-func (k *Client) GetMessage(logID ksuid.KSUID, offset int64) (GetOut, error) {
+func (c *Client) GetMessage(logID ksuid.KSUID, offset int64) (GetOut, error) {
 	var out GetOut
-	err := k.base.Get(fmt.Sprintf("message/%s?offset=%d", logID, offset), &out)
+	err := c.HTTPGet(fmt.Sprintf("message/%s?offset=%d", logID, offset), &out)
 	return out, err
 }
 
-func (k *Client) PostMessage(logID ksuid.KSUID, key string) error {
+func (c *Client) PostMessage(logID ksuid.KSUID, key string) error {
 	in := PostIn{Key: &key}
 	var out PostOut
-	return k.base.Post(fmt.Sprintf("message/%s", logID), in, &out)
+	return c.HTTPPost(fmt.Sprintf("message/%s", logID), in, &out)
 }

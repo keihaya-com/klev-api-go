@@ -29,24 +29,24 @@ type LogOut struct {
 	ExpireSeconds  int64       `json:"expire_seconds,omitempty"`
 }
 
-func (k *Client) LogsList() ([]LogOut, error) {
+func (c *Client) LogsList() ([]LogOut, error) {
 	var out LogsOut
-	err := k.base.Get(fmt.Sprintf("logs"), &out)
+	err := c.HTTPGet(fmt.Sprintf("logs"), &out)
 	return out.Logs, err
 }
 
-func (k *Client) LogCreate(in LogIn) (LogOut, error) {
+func (c *Client) LogCreate(in LogIn) (LogOut, error) {
 	var out LogOut
-	err := k.base.Post(fmt.Sprintf("logs"), in, &out)
+	err := c.HTTPPost(fmt.Sprintf("logs"), in, &out)
 	return out, err
 }
 
-func (k *Client) LogGet(logID ksuid.KSUID) error {
+func (c *Client) LogGet(logID ksuid.KSUID) error {
 	var out LogOut
-	return k.base.Get(fmt.Sprintf("log/%s", logID), &out)
+	return c.HTTPGet(fmt.Sprintf("log/%s", logID), &out)
 }
 
-func (k *Client) LogDelete(logID ksuid.KSUID) error {
+func (c *Client) LogDelete(logID ksuid.KSUID) error {
 	var out LogOut
-	return k.base.Delete(fmt.Sprintf("log/%s", logID), &out)
+	return c.HTTPDelete(fmt.Sprintf("log/%s", logID), &out)
 }
