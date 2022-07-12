@@ -32,9 +32,10 @@ func (c *Client) TokenCreate(in TokenIn) (TokenOut, error) {
 	return out, err
 }
 
-func (c *Client) TokenGet(tokenID ksuid.KSUID) error {
+func (c *Client) TokenGet(tokenID ksuid.KSUID) (TokenOut, error) {
 	var out TokenOut
-	return c.HTTPGet(fmt.Sprintf("token/%s", tokenID), &out)
+	err := c.HTTPGet(fmt.Sprintf("token/%s", tokenID), &out)
+	return out, err
 }
 
 func (c *Client) TokenDelete(tokenID ksuid.KSUID) error {

@@ -36,9 +36,10 @@ func (c *Client) WebhookCreate(in WebhookIn) (WebhookOut, error) {
 	return out, err
 }
 
-func (c *Client) WebhookGet(webhookID ksuid.KSUID) error {
+func (c *Client) WebhookGet(webhookID ksuid.KSUID) (WebhookOut, error) {
 	var out WebhookOut
-	return c.HTTPGet(fmt.Sprintf("webhook/%s", webhookID), &out)
+	err := c.HTTPGet(fmt.Sprintf("webhook/%s", webhookID), &out)
+	return out, err
 }
 
 func (c *Client) WebhookDelete(webhookID ksuid.KSUID) error {

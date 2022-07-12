@@ -41,9 +41,10 @@ func (c *Client) LogCreate(in LogIn) (LogOut, error) {
 	return out, err
 }
 
-func (c *Client) LogGet(logID ksuid.KSUID) error {
+func (c *Client) LogGet(logID ksuid.KSUID) (LogOut, error) {
 	var out LogOut
-	return c.HTTPGet(fmt.Sprintf("log/%s", logID), &out)
+	err := c.HTTPGet(fmt.Sprintf("log/%s", logID), &out)
+	return out, err
 }
 
 func (c *Client) LogDelete(logID ksuid.KSUID) error {
