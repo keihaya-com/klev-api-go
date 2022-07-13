@@ -102,6 +102,6 @@ func (c *Client) HTTPDo(req *http.Request, out interface{}) error {
 		if err != nil {
 			return fmt.Errorf("could not unmarshal error: %w", err)
 		}
-		return eout
+		return &eout
 	}
 }
