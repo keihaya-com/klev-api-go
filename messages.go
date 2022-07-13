@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -52,58 +53,155 @@ type PostOut struct {
 	NextOffset int64 `json:"next_offset"`
 }
 
-func (c *Client) PublishK(logID ksuid.KSUID, keys []string) error {
-	in := PublishIn{}
-	for _, k := range keys {
-		k := k
+type PublishMessage struct {
+	Key   []byte
+	Value []byte
+}
+
+func NewPublishMessage(key, value string) PublishMessage {
+	return PublishMessage{Key: []byte(key), Value: []byte(value)}
+}
+
+func NewPublishMessageKey(key string) PublishMessage {
+	return PublishMessage{Key: []byte(key)}
+}
+
+func NewPublishMessageValue(value string) PublishMessage {
+	return PublishMessage{Value: []byte(value)}
+}
+
+func (c *Client) Publish(logID ksuid.KSUID, messages []PublishMessage) (int64, error) {
+	in := PublishIn{
+		Encoding: "base64",
+	}
+	for _, msg := range messages {
 		in.Messages = append(in.Messages, PublishMessageIn{
-			Key: &k,
+			Key:   encodeBase64(msg.Key),
+			Value: encodeBase64(msg.Value),
 		})
 	}
-	var out PublishOut
-	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
+
+	return c.PublishRaw(logID, in)
 }
 
-func (c *Client) PublishKV(logID ksuid.KSUID, keys []string, values []string) error {
-	in := PublishIn{}
-	for i, k := range keys {
-		k := k
-		v := values[i]
-		in.Messages = append(in.Messages, PublishMessageIn{
-			Key:   &k,
-			Value: &v,
-		})
+func (c *Client) PublishRaw(logID ksuid.KSUID, in PublishIn) (int64, error) {
+	var out PublishOut
+	err := c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
+	return out.NextOffset, err
+}
+
+func (c *Client) Post(logID ksuid.KSUID, key []byte, value []byte) (int64, error) {
+	in := PostIn{
+		Encoding: "base64",
+		Key:      encodeBase64(key),
+		Value:    encodeBase64(value),
 	}
-	var out PublishOut
-	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
+
+	return c.PostRaw(logID, in)
 }
 
-func (c *Client) PublishV(logID ksuid.KSUID, values []string) error {
-	in := PublishIn{}
-	for _, v := range values {
-		v := v
-		in.Messages = append(in.Messages, PublishMessageIn{
-			Value: &v,
-		})
-	}
-	var out PublishOut
-	return c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
-}
-
-func (c *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (ConsumeOut, error) {
-	var out ConsumeOut
-	err := c.HTTPGet(fmt.Sprintf("messages/%s?offset=%d&len=%d", logID, offset, sz), &out)
-	return out, err
-}
-
-func (c *Client) GetMessage(logID ksuid.KSUID, offset int64) (GetOut, error) {
-	var out GetOut
-	err := c.HTTPGet(fmt.Sprintf("message/%s?offset=%d", logID, offset), &out)
-	return out, err
-}
-
-func (c *Client) PostMessage(logID ksuid.KSUID, key string) error {
-	in := PostIn{Key: &key}
+func (c *Client) PostRaw(logID ksuid.KSUID, in PostIn) (int64, error) {
 	var out PostOut
-	return c.HTTPPost(fmt.Sprintf("message/%s", logID), in, &out)
+	err := c.HTTPPost(fmt.Sprintf("message/%s", logID), in, &out)
+	return out.NextOffset, err
+}
+
+func encodeBase64(b []byte) *string {
+	if b == nil {
+		return nil
+	}
+	s := base64.StdEncoding.EncodeToString(b)
+	return &s
+}
+
+func encodeLiteral(b []byte) *string {
+	if b == nil {
+		return nil
+	}
+	s := string(b)
+	return &s
+}
+
+type ConsumeMessage struct {
+	Offset int64
+	Time   time.Time
+	Key    []byte
+	Value  []byte
+}
+
+func (c *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
+	var out ConsumeOut
+	err := c.HTTPGet(fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", logID, offset, sz), &out)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	var decoder = decodeBase64
+	if out.Encoding == "string" {
+		decoder = decodeLiteral
+	}
+
+	var msgs []ConsumeMessage
+	for _, msg := range out.Messages {
+		k, err := decoder(msg.Key)
+		if err != nil {
+			return 0, nil, err
+		}
+		v, err := decoder(msg.Value)
+		if err != nil {
+			return 0, nil, err
+		}
+
+		msgs = append(msgs, ConsumeMessage{
+			Offset: msg.Offset,
+			Time:   msg.Time,
+			Key:    k,
+			Value:  v,
+		})
+	}
+
+	return out.NextOffset, msgs, err
+}
+
+func (c *Client) Get(logID ksuid.KSUID, offset int64) (ConsumeMessage, error) {
+	var out GetOut
+	err := c.HTTPGet(fmt.Sprintf("message/%s?offset=%d&encoding=base64", logID, offset), &out)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+
+	var decoder = decodeBase64
+	if out.Encoding == "string" {
+		decoder = decodeLiteral
+	}
+
+	k, err := decoder(out.Key)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+	v, err := decoder(out.Value)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+
+	return ConsumeMessage{
+		Offset: out.Offset,
+		Time:   out.Time,
+		Key:    k,
+		Value:  v,
+	}, err
+}
+
+func decodeBase64(s *string) ([]byte, error) {
+	if s == nil {
+		return nil, nil
+	}
+	return base64.StdEncoding.DecodeString(*s)
+}
+
+func decodeLiteral(s *string) ([]byte, error) {
+	if s == nil {
+		return nil, nil
+	}
+	return []byte(*s), nil
 }
