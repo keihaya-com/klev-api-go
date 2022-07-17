@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/segmentio/ksuid"
@@ -29,25 +30,25 @@ type LogOut struct {
 	ExpireSeconds  int64       `json:"expire_seconds,omitempty"`
 }
 
-func (c *Client) LogsList() ([]LogOut, error) {
+func (c *Client) LogsList(ctx context.Context) ([]LogOut, error) {
 	var out LogsOut
-	err := c.HTTPGet(fmt.Sprintf("logs"), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("logs"), &out)
 	return out.Logs, err
 }
 
-func (c *Client) LogCreate(in LogIn) (LogOut, error) {
+func (c *Client) LogCreate(ctx context.Context, in LogIn) (LogOut, error) {
 	var out LogOut
-	err := c.HTTPPost(fmt.Sprintf("logs"), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("logs"), in, &out)
 	return out, err
 }
 
-func (c *Client) LogGet(logID ksuid.KSUID) (LogOut, error) {
+func (c *Client) LogGet(ctx context.Context, logID ksuid.KSUID) (LogOut, error) {
 	var out LogOut
-	err := c.HTTPGet(fmt.Sprintf("log/%s", logID), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("log/%s", logID), &out)
 	return out, err
 }
 
-func (c *Client) LogDelete(logID ksuid.KSUID) error {
+func (c *Client) LogDelete(ctx context.Context, logID ksuid.KSUID) error {
 	var out LogOut
-	return c.HTTPDelete(fmt.Sprintf("log/%s", logID), &out)
+	return c.HTTPDelete(ctx, fmt.Sprintf("log/%s", logID), &out)
 }

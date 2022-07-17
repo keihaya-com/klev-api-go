@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"time"
@@ -70,7 +71,7 @@ func NewPublishMessageValue(value string) PublishMessage {
 	return PublishMessage{Value: []byte(value)}
 }
 
-func (c *Client) Publish(logID ksuid.KSUID, messages []PublishMessage) (int64, error) {
+func (c *Client) Publish(ctx context.Context, logID ksuid.KSUID, messages []PublishMessage) (int64, error) {
 	in := PublishIn{
 		Encoding: "base64",
 	}
@@ -81,28 +82,28 @@ func (c *Client) Publish(logID ksuid.KSUID, messages []PublishMessage) (int64, e
 		})
 	}
 
-	return c.PublishRaw(logID, in)
+	return c.PublishRaw(ctx, logID, in)
 }
 
-func (c *Client) PublishRaw(logID ksuid.KSUID, in PublishIn) (int64, error) {
+func (c *Client) PublishRaw(ctx context.Context, logID ksuid.KSUID, in PublishIn) (int64, error) {
 	var out PublishOut
-	err := c.HTTPPost(fmt.Sprintf("messages/%s", logID), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("messages/%s", logID), in, &out)
 	return out.NextOffset, err
 }
 
-func (c *Client) Post(logID ksuid.KSUID, key []byte, value []byte) (int64, error) {
+func (c *Client) Post(ctx context.Context, logID ksuid.KSUID, key []byte, value []byte) (int64, error) {
 	in := PostIn{
 		Encoding: "base64",
 		Key:      encodeBase64(key),
 		Value:    encodeBase64(value),
 	}
 
-	return c.PostRaw(logID, in)
+	return c.PostRaw(ctx, logID, in)
 }
 
-func (c *Client) PostRaw(logID ksuid.KSUID, in PostIn) (int64, error) {
+func (c *Client) PostRaw(ctx context.Context, logID ksuid.KSUID, in PostIn) (int64, error) {
 	var out PostOut
-	err := c.HTTPPost(fmt.Sprintf("message/%s", logID), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s", logID), in, &out)
 	return out.NextOffset, err
 }
 
@@ -129,9 +130,9 @@ type ConsumeMessage struct {
 	Value  []byte
 }
 
-func (c *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
+func (c *Client) Consume(ctx context.Context, logID ksuid.KSUID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
 	var out ConsumeOut
-	err := c.HTTPGet(fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", logID, offset, sz), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", logID, offset, sz), &out)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -163,9 +164,9 @@ func (c *Client) Consume(logID ksuid.KSUID, offset int64, sz int32) (int64, []Co
 	return out.NextOffset, msgs, err
 }
 
-func (c *Client) Get(logID ksuid.KSUID, offset int64) (ConsumeMessage, error) {
+func (c *Client) Get(ctx context.Context, logID ksuid.KSUID, offset int64) (ConsumeMessage, error) {
 	var out GetOut
-	err := c.HTTPGet(fmt.Sprintf("message/%s?offset=%d&encoding=base64", logID, offset), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", logID, offset), &out)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}

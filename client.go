@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -36,10 +37,10 @@ func New(cfg Config) *Client {
 	}
 }
 
-func (c *Client) HTTPGet(path string, out interface{}) error {
+func (c *Client) HTTPGet(ctx context.Context, path string, out interface{}) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
-	req, err := http.NewRequest(http.MethodGet, target, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
 	if err != nil {
 		return fmt.Errorf("could not prepare HTTP get: %w", err)
 	}
@@ -48,7 +49,7 @@ func (c *Client) HTTPGet(path string, out interface{}) error {
 	return c.HTTPDo(req, out)
 }
 
-func (c *Client) HTTPPost(path string, in interface{}, out interface{}) error {
+func (c *Client) HTTPPost(ctx context.Context, path string, in interface{}, out interface{}) error {
 	bin, err := json.Marshal(in)
 	if err != nil {
 		return fmt.Errorf("could not marshal json: %w", err)
@@ -56,7 +57,7 @@ func (c *Client) HTTPPost(path string, in interface{}, out interface{}) error {
 
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
-	req, err := http.NewRequest(http.MethodPost, target, bytes.NewBuffer(bin))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, target, bytes.NewBuffer(bin))
 	if err != nil {
 		return fmt.Errorf("could not prepare HTTP post: %w", err)
 	}
@@ -65,10 +66,10 @@ func (c *Client) HTTPPost(path string, in interface{}, out interface{}) error {
 	return c.HTTPDo(req, out)
 }
 
-func (c *Client) HTTPDelete(path string, out interface{}) error {
+func (c *Client) HTTPDelete(ctx context.Context, path string, out interface{}) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
-	req, err := http.NewRequest(http.MethodDelete, target, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, target, nil)
 	if err != nil {
 		return fmt.Errorf("could not prepare HTTP delete: %w", err)
 	}

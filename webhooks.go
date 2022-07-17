@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/segmentio/ksuid"
@@ -24,25 +25,25 @@ type WebhookOut struct {
 	Type      string      `json:"type"`
 }
 
-func (c *Client) WebhooksList() ([]WebhookOut, error) {
+func (c *Client) WebhooksList(ctx context.Context) ([]WebhookOut, error) {
 	var out WebhooksOut
-	err := c.HTTPGet(fmt.Sprintf("webhooks"), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("webhooks"), &out)
 	return out.Webhooks, err
 }
 
-func (c *Client) WebhookCreate(in WebhookIn) (WebhookOut, error) {
+func (c *Client) WebhookCreate(ctx context.Context, in WebhookIn) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPPost(fmt.Sprintf("webhooks"), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("webhooks"), in, &out)
 	return out, err
 }
 
-func (c *Client) WebhookGet(webhookID ksuid.KSUID) (WebhookOut, error) {
+func (c *Client) WebhookGet(ctx context.Context, webhookID ksuid.KSUID) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPGet(fmt.Sprintf("webhook/%s", webhookID), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("webhook/%s", webhookID), &out)
 	return out, err
 }
 
-func (c *Client) WebhookDelete(webhookID ksuid.KSUID) error {
+func (c *Client) WebhookDelete(ctx context.Context, webhookID ksuid.KSUID) error {
 	var out WebhookOut
-	return c.HTTPDelete(fmt.Sprintf("webhook/%s", webhookID), &out)
+	return c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", webhookID), &out)
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/segmentio/ksuid"
@@ -20,25 +21,25 @@ type TokenOut struct {
 	Bearer   string      `json:"bearer,omitempty"`
 }
 
-func (c *Client) TokensList() ([]TokenOut, error) {
+func (c *Client) TokensList(ctx context.Context) ([]TokenOut, error) {
 	var out TokensOut
-	err := c.HTTPGet(fmt.Sprintf("tokens"), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("tokens"), &out)
 	return out.Tokens, err
 }
 
-func (c *Client) TokenCreate(in TokenIn) (TokenOut, error) {
+func (c *Client) TokenCreate(ctx context.Context, in TokenIn) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPPost(fmt.Sprintf("tokens"), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("tokens"), in, &out)
 	return out, err
 }
 
-func (c *Client) TokenGet(tokenID ksuid.KSUID) (TokenOut, error) {
+func (c *Client) TokenGet(ctx context.Context, tokenID ksuid.KSUID) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPGet(fmt.Sprintf("token/%s", tokenID), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("token/%s", tokenID), &out)
 	return out, err
 }
 
-func (c *Client) TokenDelete(tokenID ksuid.KSUID) error {
+func (c *Client) TokenDelete(ctx context.Context, tokenID ksuid.KSUID) error {
 	var out TokenOut
-	return c.HTTPDelete(fmt.Sprintf("token/%s", tokenID), &out)
+	return c.HTTPDelete(ctx, fmt.Sprintf("token/%s", tokenID), &out)
 }
