@@ -9,6 +9,15 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
+const (
+	// OffsetOldest represents the smallest offset still available
+	// Use it to consume all messages, starting at the beginning of the log
+	OffsetOldest int64 = -1
+	// OffsetNewest represents the offset that will be used for the next produce
+	// Use it to consume messages, starting from the next one produced
+	OffsetNewest int64 = -2
+)
+
 type ConsumeOut struct {
 	NextOffset int64               `json:"next_offset"`
 	Encoding   string              `json:"encoding"`
