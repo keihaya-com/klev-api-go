@@ -54,6 +54,11 @@ type GetOut struct {
 	Value    *string `json:"value,omitempty"`
 }
 
+type GetByKeyIn struct {
+	Encoding string  `json:"encoding"`
+	Key      *string `json:"key"`
+}
+
 type PostIn struct {
 	Encoding string  `json:"encoding"`
 	Time     *int64  `json:"time"`
@@ -189,6 +194,38 @@ func (c *Client) Consume(ctx context.Context, logID ksuid.KSUID, offset int64, s
 func (c *Client) Get(ctx context.Context, logID ksuid.KSUID, offset int64) (ConsumeMessage, error) {
 	var out GetOut
 	err := c.HTTPGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", logID, offset), &out)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+
+	var decoder = decodeBase64
+	if out.Encoding == "string" {
+		decoder = decodeLiteral
+	}
+
+	k, err := decoder(out.Key)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+	v, err := decoder(out.Value)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+
+	return ConsumeMessage{
+		Offset: out.Offset,
+		Time:   decodeTime(out.Time),
+		Key:    k,
+		Value:  v,
+	}, err
+}
+
+func (c *Client) GetByKey(ctx context.Context, logID ksuid.KSUID, key []byte) (ConsumeMessage, error) {
+	var out GetOut
+	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s/key", logID), GetByKeyIn{
+		Encoding: "base64",
+		Key:      encodeBase64(key),
+	}, &out)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
