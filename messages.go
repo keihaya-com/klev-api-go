@@ -25,10 +25,10 @@ type ConsumeOut struct {
 }
 
 type ConsumeMessageOut struct {
-	Offset int64     `json:"offset"`
-	Time   time.Time `json:"time"`
-	Key    *string   `json:"key,omitempty"`
-	Value  *string   `json:"value,omitempty"`
+	Offset int64   `json:"offset"`
+	Time   int64   `json:"time"`
+	Key    *string `json:"key,omitempty"`
+	Value  *string `json:"value,omitempty"`
 }
 
 type PublishIn struct {
@@ -37,6 +37,7 @@ type PublishIn struct {
 }
 
 type PublishMessageIn struct {
+	Time  *int64  `json:"time"`
 	Key   *string `json:"key"`
 	Value *string `json:"value"`
 }
@@ -46,15 +47,16 @@ type PublishOut struct {
 }
 
 type GetOut struct {
-	Encoding string    `json:"encoding"`
-	Offset   int64     `json:"offset"`
-	Time     time.Time `json:"time"`
-	Key      *string   `json:"key,omitempty"`
-	Value    *string   `json:"value,omitempty"`
+	Encoding string  `json:"encoding"`
+	Offset   int64   `json:"offset"`
+	Time     int64   `json:"time"`
+	Key      *string `json:"key,omitempty"`
+	Value    *string `json:"value,omitempty"`
 }
 
 type PostIn struct {
 	Encoding string  `json:"encoding"`
+	Time     *int64  `json:"time"`
 	Key      *string `json:"key"`
 	Value    *string `json:"value"`
 }
@@ -64,6 +66,7 @@ type PostOut struct {
 }
 
 type PublishMessage struct {
+	Time  time.Time
 	Key   []byte
 	Value []byte
 }
@@ -86,6 +89,7 @@ func (c *Client) Publish(ctx context.Context, logID ksuid.KSUID, messages []Publ
 	}
 	for _, msg := range messages {
 		in.Messages = append(in.Messages, PublishMessageIn{
+			Time:  encodeTime(msg.Time),
 			Key:   encodeBase64(msg.Key),
 			Value: encodeBase64(msg.Value),
 		})
@@ -100,9 +104,10 @@ func (c *Client) PublishRaw(ctx context.Context, logID ksuid.KSUID, in PublishIn
 	return out.NextOffset, err
 }
 
-func (c *Client) Post(ctx context.Context, logID ksuid.KSUID, key []byte, value []byte) (int64, error) {
+func (c *Client) Post(ctx context.Context, logID ksuid.KSUID, t time.Time, key []byte, value []byte) (int64, error) {
 	in := PostIn{
 		Encoding: "base64",
+		Time:     encodeTime(t),
 		Key:      encodeBase64(key),
 		Value:    encodeBase64(value),
 	}
@@ -114,6 +119,14 @@ func (c *Client) PostRaw(ctx context.Context, logID ksuid.KSUID, in PostIn) (int
 	var out PostOut
 	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s", logID), in, &out)
 	return out.NextOffset, err
+}
+
+func encodeTime(t time.Time) *int64 {
+	if t.IsZero() {
+		return nil
+	}
+	ts := t.UnixMicro()
+	return &ts
 }
 
 func encodeBase64(b []byte) *string {
@@ -164,7 +177,7 @@ func (c *Client) Consume(ctx context.Context, logID ksuid.KSUID, offset int64, s
 
 		msgs = append(msgs, ConsumeMessage{
 			Offset: msg.Offset,
-			Time:   msg.Time,
+			Time:   decodeTime(msg.Time),
 			Key:    k,
 			Value:  v,
 		})
@@ -196,10 +209,14 @@ func (c *Client) Get(ctx context.Context, logID ksuid.KSUID, offset int64) (Cons
 
 	return ConsumeMessage{
 		Offset: out.Offset,
-		Time:   out.Time,
+		Time:   decodeTime(out.Time),
 		Key:    k,
 		Value:  v,
 	}, err
+}
+
+func decodeTime(ts int64) time.Time {
+	return time.UnixMicro(ts).UTC()
 }
 
 func decodeBase64(s *string) ([]byte, error) {
