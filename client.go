@@ -9,12 +9,14 @@ import (
 	"net/http"
 )
 
+// Config is used to configure a client instance
 type Config struct {
 	BaseURL string
 	Token   string
 	Client  *http.Client
 }
 
+// NewConfig creates new client configuration with a token
 func NewConfig(token string) Config {
 	return Config{
 		BaseURL: "https://api.klev.dev",
@@ -23,12 +25,14 @@ func NewConfig(token string) Config {
 	}
 }
 
+// Client wraps interactions with klev api
 type Client struct {
 	baseURL string
 	token   string
 	client  *http.Client
 }
 
+// New create a new client from a config
 func New(cfg Config) *Client {
 	return &Client{
 		baseURL: cfg.BaseURL,
