@@ -38,14 +38,15 @@ var (
 
 // Messages errors
 var (
-	ErrMessagesMaxPublish          = "ERR_KLEV_MESSAGES_0001"
-	ErrMessagesMaxKey              = "ERR_KLEV_MESSAGES_0002"
-	ErrMessagesMaxValue            = "ERR_KLEV_MESSAGES_0003"
-	ErrMessagesMaxConsume          = "ERR_KLEV_MESSAGES_0004"
-	ErrMessagesConsumeInvalid      = "ERR_KLEV_MESSAGES_0005"
-	ErrMessagesGetByOffsetNotFound = "ERR_KLEV_MESSAGES_0006"
-	ErrMessagesGetByOffsetInvalid  = "ERR_KLEV_MESSAGES_0007"
-	ErrMessagesGetByKeyNotFound    = "ERR_KLEV_MESSAGES_0008"
+	ErrMessagesMaxPublish            = "ERR_KLEV_MESSAGES_0001"
+	ErrMessagesMaxKey                = "ERR_KLEV_MESSAGES_0002"
+	ErrMessagesMaxValue              = "ERR_KLEV_MESSAGES_0003"
+	ErrMessagesMaxConsume            = "ERR_KLEV_MESSAGES_0004"
+	ErrMessagesConsumeInvalid        = "ERR_KLEV_MESSAGES_0005"
+	ErrMessagesGetByOffsetNotFound   = "ERR_KLEV_MESSAGES_0006"
+	ErrMessagesGetByOffsetInvalid    = "ERR_KLEV_MESSAGES_0007"
+	ErrMessagesGetByKeyNotCompacting = "ERR_KLEV_MESSAGES_0008"
+	ErrMessagesGetByKeyNotFound      = "ERR_KLEV_MESSAGES_0009"
 )
 
 // Tokens errors
