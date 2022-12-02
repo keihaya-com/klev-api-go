@@ -5,8 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"time"
-
-	"github.com/segmentio/ksuid"
 )
 
 const (
@@ -88,7 +86,7 @@ func NewPublishMessageValue(value string) PublishMessage {
 	return PublishMessage{Value: []byte(value)}
 }
 
-func (c *Client) Publish(ctx context.Context, logID ksuid.KSUID, messages []PublishMessage) (int64, error) {
+func (c *Client) Publish(ctx context.Context, id LogID, messages []PublishMessage) (int64, error) {
 	in := PublishIn{
 		Encoding: "base64",
 	}
@@ -100,16 +98,16 @@ func (c *Client) Publish(ctx context.Context, logID ksuid.KSUID, messages []Publ
 		})
 	}
 
-	return c.PublishRaw(ctx, logID, in)
+	return c.PublishRaw(ctx, id, in)
 }
 
-func (c *Client) PublishRaw(ctx context.Context, logID ksuid.KSUID, in PublishIn) (int64, error) {
+func (c *Client) PublishRaw(ctx context.Context, id LogID, in PublishIn) (int64, error) {
 	var out PublishOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("messages/%s", logID), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
 	return out.NextOffset, err
 }
 
-func (c *Client) Post(ctx context.Context, logID ksuid.KSUID, t time.Time, key []byte, value []byte) (int64, error) {
+func (c *Client) Post(ctx context.Context, id LogID, t time.Time, key []byte, value []byte) (int64, error) {
 	in := PostIn{
 		Encoding: "base64",
 		Time:     encodeTime(t),
@@ -117,12 +115,12 @@ func (c *Client) Post(ctx context.Context, logID ksuid.KSUID, t time.Time, key [
 		Value:    encodeBase64(value),
 	}
 
-	return c.PostRaw(ctx, logID, in)
+	return c.PostRaw(ctx, id, in)
 }
 
-func (c *Client) PostRaw(ctx context.Context, logID ksuid.KSUID, in PostIn) (int64, error) {
+func (c *Client) PostRaw(ctx context.Context, id LogID, in PostIn) (int64, error) {
 	var out PostOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s", logID), in, &out)
+	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s", id), in, &out)
 	return out.NextOffset, err
 }
 
@@ -157,9 +155,9 @@ type ConsumeMessage struct {
 	Value  []byte
 }
 
-func (c *Client) Consume(ctx context.Context, logID ksuid.KSUID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
+func (c *Client) Consume(ctx context.Context, id LogID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
 	var out ConsumeOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", logID, offset, sz), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz), &out)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -191,9 +189,9 @@ func (c *Client) Consume(ctx context.Context, logID ksuid.KSUID, offset int64, s
 	return out.NextOffset, msgs, err
 }
 
-func (c *Client) Get(ctx context.Context, logID ksuid.KSUID, offset int64) (ConsumeMessage, error) {
+func (c *Client) Get(ctx context.Context, id LogID, offset int64) (ConsumeMessage, error) {
 	var out GetOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", logID, offset), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", id, offset), &out)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
@@ -220,9 +218,9 @@ func (c *Client) Get(ctx context.Context, logID ksuid.KSUID, offset int64) (Cons
 	}, err
 }
 
-func (c *Client) GetByKey(ctx context.Context, logID ksuid.KSUID, key []byte) (ConsumeMessage, error) {
+func (c *Client) GetByKey(ctx context.Context, id LogID, key []byte) (ConsumeMessage, error) {
 	var out GetOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s/key", logID), GetByKeyIn{
+	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s/key", id), GetByKeyIn{
 		Encoding: "base64",
 		Key:      encodeBase64(key),
 	}, &out)

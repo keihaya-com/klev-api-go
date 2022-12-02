@@ -3,7 +3,8 @@ package api
 
 // Internal errors
 var (
-	ErrInternalServerError = "ERR_KLEV_INTERNAL_0001"
+	ErrInternalServerError      = "ERR_KLEV_INTERNAL_0001"
+	ErrInternalMaintenanceError = "ERR_KLEV_INTERNAL_0002"
 )
 
 // API errors

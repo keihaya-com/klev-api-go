@@ -3,15 +3,15 @@ package api
 import (
 	"context"
 	"fmt"
-
-	"github.com/segmentio/ksuid"
 )
 
+type WebhookID string
+
 type WebhookIn struct {
-	LogID    ksuid.KSUID `json:"log_id"`
-	Metadata string      `json:"metadata"`
-	Type     string      `json:"type"`
-	Secret   string      `json:"secret"`
+	LogID    LogID  `json:"log_id"`
+	Metadata string `json:"metadata"`
+	Type     string `json:"type"`
+	Secret   string `json:"secret"`
 }
 
 type WebhooksOut struct {
@@ -19,10 +19,10 @@ type WebhooksOut struct {
 }
 
 type WebhookOut struct {
-	WebhookID ksuid.KSUID `json:"webhook_id"`
-	LogID     ksuid.KSUID `json:"log_id"`
-	Metadata  string      `json:"metadata"`
-	Type      string      `json:"type"`
+	WebhookID WebhookID `json:"webhook_id"`
+	LogID     LogID     `json:"log_id"`
+	Metadata  string    `json:"metadata"`
+	Type      string    `json:"type"`
 }
 
 func (c *Client) WebhooksList(ctx context.Context) ([]WebhookOut, error) {
@@ -37,13 +37,13 @@ func (c *Client) WebhookCreate(ctx context.Context, in WebhookIn) (WebhookOut, e
 	return out, err
 }
 
-func (c *Client) WebhookGet(ctx context.Context, webhookID ksuid.KSUID) (WebhookOut, error) {
+func (c *Client) WebhookGet(ctx context.Context, id WebhookID) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("webhook/%s", webhookID), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("webhook/%s", id), &out)
 	return out, err
 }
 
-func (c *Client) WebhookDelete(ctx context.Context, webhookID ksuid.KSUID) error {
+func (c *Client) WebhookDelete(ctx context.Context, id WebhookID) error {
 	var out WebhookOut
-	return c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", webhookID), &out)
+	return c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", id), &out)
 }

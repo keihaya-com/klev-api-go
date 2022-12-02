@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 	"fmt"
-
-	"github.com/segmentio/ksuid"
 )
+
+type TokenID string
 
 type TokenIn struct {
 	Metadata string `json:"metadata"`
@@ -16,9 +16,9 @@ type TokensOut struct {
 }
 
 type TokenOut struct {
-	TokenID  ksuid.KSUID `json:"token_id"`
-	Metadata string      `json:"metadata"`
-	Bearer   string      `json:"bearer,omitempty"`
+	TokenID  TokenID `json:"token_id"`
+	Metadata string  `json:"metadata"`
+	Bearer   string  `json:"bearer,omitempty"`
 }
 
 func (c *Client) TokensList(ctx context.Context) ([]TokenOut, error) {
@@ -33,13 +33,13 @@ func (c *Client) TokenCreate(ctx context.Context, in TokenIn) (TokenOut, error) 
 	return out, err
 }
 
-func (c *Client) TokenGet(ctx context.Context, tokenID ksuid.KSUID) (TokenOut, error) {
+func (c *Client) TokenGet(ctx context.Context, id TokenID) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("token/%s", tokenID), &out)
+	err := c.HTTPGet(ctx, fmt.Sprintf("token/%s", id), &out)
 	return out, err
 }
 
-func (c *Client) TokenDelete(ctx context.Context, tokenID ksuid.KSUID) error {
+func (c *Client) TokenDelete(ctx context.Context, id TokenID) error {
 	var out TokenOut
-	return c.HTTPDelete(ctx, fmt.Sprintf("token/%s", tokenID), &out)
+	return c.HTTPDelete(ctx, fmt.Sprintf("token/%s", id), &out)
 }
