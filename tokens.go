@@ -8,7 +8,8 @@ import (
 type TokenID string
 
 type TokenIn struct {
-	Metadata string `json:"metadata"`
+	Metadata string   `json:"metadata"`
+	ACL      []string `json:"acl"`
 }
 
 type TokensOut struct {
@@ -16,9 +17,10 @@ type TokensOut struct {
 }
 
 type TokenOut struct {
-	TokenID  TokenID `json:"token_id"`
-	Metadata string  `json:"metadata"`
-	Bearer   string  `json:"bearer,omitempty"`
+	TokenID  TokenID  `json:"token_id"`
+	Metadata string   `json:"metadata"`
+	ACL      []string `json:"acl"`
+	Bearer   string   `json:"bearer,omitempty"`
 }
 
 func (c *Client) TokensList(ctx context.Context) ([]TokenOut, error) {
