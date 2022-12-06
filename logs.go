@@ -36,6 +36,12 @@ func (c *Client) LogsList(ctx context.Context) ([]LogOut, error) {
 	return out.Logs, err
 }
 
+func (c *Client) LogsFind(ctx context.Context, metadata string) ([]LogOut, error) {
+	var out LogsOut
+	err := c.HTTPGet(ctx, fmt.Sprintf("logs?q=%s", metadata), &out)
+	return out.Logs, err
+}
+
 func (c *Client) LogCreate(ctx context.Context, in LogIn) (LogOut, error) {
 	var out LogOut
 	err := c.HTTPPost(ctx, fmt.Sprintf("logs"), in, &out)

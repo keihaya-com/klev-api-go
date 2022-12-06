@@ -29,6 +29,12 @@ func (c *Client) TokensList(ctx context.Context) ([]TokenOut, error) {
 	return out.Tokens, err
 }
 
+func (c *Client) TokensFind(ctx context.Context, metadata string) ([]TokenOut, error) {
+	var out TokensOut
+	err := c.HTTPGet(ctx, fmt.Sprintf("tokens?q=%s", metadata), &out)
+	return out.Tokens, err
+}
+
 func (c *Client) TokenCreate(ctx context.Context, in TokenIn) (TokenOut, error) {
 	var out TokenOut
 	err := c.HTTPPost(ctx, fmt.Sprintf("tokens"), in, &out)
