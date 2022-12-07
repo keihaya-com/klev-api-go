@@ -41,7 +41,13 @@ func New(cfg Config) *Client {
 	}
 }
 
-func (c *Client) HTTPGet(ctx context.Context, path string, out interface{}) error {
+func (c *Client) Paths(ctx context.Context) (map[string]string, error) {
+	var out = map[string]string{}
+	err := c.httpGet(ctx, "", out)
+	return out, err
+}
+
+func (c *Client) httpGet(ctx context.Context, path string, out interface{}) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
@@ -50,10 +56,10 @@ func (c *Client) HTTPGet(ctx context.Context, path string, out interface{}) erro
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return c.HTTPDo(req, out)
+	return c.httpDo(req, out)
 }
 
-func (c *Client) HTTPPost(ctx context.Context, path string, in interface{}, out interface{}) error {
+func (c *Client) httpPost(ctx context.Context, path string, in interface{}, out interface{}) error {
 	bin, err := json.Marshal(in)
 	if err != nil {
 		return fmt.Errorf("could not marshal json: %w", err)
@@ -67,10 +73,10 @@ func (c *Client) HTTPPost(ctx context.Context, path string, in interface{}, out 
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return c.HTTPDo(req, out)
+	return c.httpDo(req, out)
 }
 
-func (c *Client) HTTPDelete(ctx context.Context, path string, out interface{}) error {
+func (c *Client) httpDelete(ctx context.Context, path string, out interface{}) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, target, nil)
@@ -79,10 +85,10 @@ func (c *Client) HTTPDelete(ctx context.Context, path string, out interface{}) e
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return c.HTTPDo(req, out)
+	return c.httpDo(req, out)
 }
 
-func (c *Client) HTTPDo(req *http.Request, out interface{}) error {
+func (c *Client) httpDo(req *http.Request, out interface{}) error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

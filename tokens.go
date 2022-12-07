@@ -25,30 +25,30 @@ type TokenOut struct {
 
 func (c *Client) TokensList(ctx context.Context) ([]TokenOut, error) {
 	var out TokensOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("tokens"), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("tokens"), &out)
 	return out.Tokens, err
 }
 
 func (c *Client) TokensFind(ctx context.Context, metadata string) ([]TokenOut, error) {
 	var out TokensOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("tokens?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("tokens?q=%s", metadata), &out)
 	return out.Tokens, err
 }
 
 func (c *Client) TokenCreate(ctx context.Context, in TokenIn) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("tokens"), in, &out)
+	err := c.httpPost(ctx, fmt.Sprintf("tokens"), in, &out)
 	return out, err
 }
 
 func (c *Client) TokenGet(ctx context.Context, id TokenID) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("token/%s", id), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("token/%s", id), &out)
 	return out, err
 }
 
 func (c *Client) TokenDelete(ctx context.Context, id TokenID) (TokenOut, error) {
 	var out TokenOut
-	err := c.HTTPDelete(ctx, fmt.Sprintf("token/%s", id), &out)
+	err := c.httpDelete(ctx, fmt.Sprintf("token/%s", id), &out)
 	return out, err
 }

@@ -103,7 +103,7 @@ func (c *Client) Publish(ctx context.Context, id LogID, messages []PublishMessag
 
 func (c *Client) PublishRaw(ctx context.Context, id LogID, in PublishIn) (int64, error) {
 	var out PublishOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
+	err := c.httpPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
 	return out.NextOffset, err
 }
 
@@ -120,7 +120,7 @@ func (c *Client) Post(ctx context.Context, id LogID, t time.Time, key []byte, va
 
 func (c *Client) PostRaw(ctx context.Context, id LogID, in PostIn) (int64, error) {
 	var out PostOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s", id), in, &out)
+	err := c.httpPost(ctx, fmt.Sprintf("message/%s", id), in, &out)
 	return out.NextOffset, err
 }
 
@@ -157,7 +157,7 @@ type ConsumeMessage struct {
 
 func (c *Client) Consume(ctx context.Context, id LogID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
 	var out ConsumeOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz), &out)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -191,7 +191,7 @@ func (c *Client) Consume(ctx context.Context, id LogID, offset int64, sz int32) 
 
 func (c *Client) Get(ctx context.Context, id LogID, offset int64) (ConsumeMessage, error) {
 	var out GetOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", id, offset), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", id, offset), &out)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
@@ -220,7 +220,7 @@ func (c *Client) Get(ctx context.Context, id LogID, offset int64) (ConsumeMessag
 
 func (c *Client) GetByKey(ctx context.Context, id LogID, key []byte) (ConsumeMessage, error) {
 	var out GetOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("message/%s/key", id), GetByKeyIn{
+	err := c.httpPost(ctx, fmt.Sprintf("message/%s/key", id), GetByKeyIn{
 		Encoding: "base64",
 		Key:      encodeBase64(key),
 	}, &out)

@@ -32,30 +32,30 @@ type LogOut struct {
 
 func (c *Client) LogsList(ctx context.Context) ([]LogOut, error) {
 	var out LogsOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("logs"), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("logs"), &out)
 	return out.Logs, err
 }
 
 func (c *Client) LogsFind(ctx context.Context, metadata string) ([]LogOut, error) {
 	var out LogsOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("logs?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("logs?q=%s", metadata), &out)
 	return out.Logs, err
 }
 
 func (c *Client) LogCreate(ctx context.Context, in LogIn) (LogOut, error) {
 	var out LogOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("logs"), in, &out)
+	err := c.httpPost(ctx, fmt.Sprintf("logs"), in, &out)
 	return out, err
 }
 
 func (c *Client) LogGet(ctx context.Context, id LogID) (LogOut, error) {
 	var out LogOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("log/%s", id), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("log/%s", id), &out)
 	return out, err
 }
 
 func (c *Client) LogDelete(ctx context.Context, id LogID) (LogOut, error) {
 	var out LogOut
-	err := c.HTTPDelete(ctx, fmt.Sprintf("log/%s", id), &out)
+	err := c.httpDelete(ctx, fmt.Sprintf("log/%s", id), &out)
 	return out, err
 }

@@ -27,30 +27,30 @@ type WebhookOut struct {
 
 func (c *Client) WebhooksList(ctx context.Context) ([]WebhookOut, error) {
 	var out WebhooksOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("webhooks"), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("webhooks"), &out)
 	return out.Webhooks, err
 }
 
 func (c *Client) WebhooksFind(ctx context.Context, metadata string) ([]WebhookOut, error) {
 	var out WebhooksOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("webhooks?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("webhooks?q=%s", metadata), &out)
 	return out.Webhooks, err
 }
 
 func (c *Client) WebhookCreate(ctx context.Context, in WebhookIn) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPPost(ctx, fmt.Sprintf("webhooks"), in, &out)
+	err := c.httpPost(ctx, fmt.Sprintf("webhooks"), in, &out)
 	return out, err
 }
 
 func (c *Client) WebhookGet(ctx context.Context, id WebhookID) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPGet(ctx, fmt.Sprintf("webhook/%s", id), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("webhook/%s", id), &out)
 	return out, err
 }
 
 func (c *Client) WebhookDelete(ctx context.Context, id WebhookID) (WebhookOut, error) {
 	var out WebhookOut
-	err := c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", id), &out)
+	err := c.httpDelete(ctx, fmt.Sprintf("webhook/%s", id), &out)
 	return out, err
 }
