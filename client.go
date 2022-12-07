@@ -42,8 +42,8 @@ func New(cfg Config) *Client {
 }
 
 func (c *Client) Paths(ctx context.Context) (map[string]string, error) {
-	var out = map[string]string{}
-	err := c.httpGet(ctx, "", out)
+	var out map[string]string
+	err := c.httpGet(ctx, "", &out)
 	return out, err
 }
 
