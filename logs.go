@@ -54,7 +54,8 @@ func (c *Client) LogGet(ctx context.Context, id LogID) (LogOut, error) {
 	return out, err
 }
 
-func (c *Client) LogDelete(ctx context.Context, id LogID) error {
+func (c *Client) LogDelete(ctx context.Context, id LogID) (LogOut, error) {
 	var out LogOut
-	return c.HTTPDelete(ctx, fmt.Sprintf("log/%s", id), &out)
+	err := c.HTTPDelete(ctx, fmt.Sprintf("log/%s", id), &out)
+	return out, err
 }

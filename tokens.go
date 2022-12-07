@@ -47,7 +47,8 @@ func (c *Client) TokenGet(ctx context.Context, id TokenID) (TokenOut, error) {
 	return out, err
 }
 
-func (c *Client) TokenDelete(ctx context.Context, id TokenID) error {
+func (c *Client) TokenDelete(ctx context.Context, id TokenID) (TokenOut, error) {
 	var out TokenOut
-	return c.HTTPDelete(ctx, fmt.Sprintf("token/%s", id), &out)
+	err := c.HTTPDelete(ctx, fmt.Sprintf("token/%s", id), &out)
+	return out, err
 }

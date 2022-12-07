@@ -49,7 +49,8 @@ func (c *Client) WebhookGet(ctx context.Context, id WebhookID) (WebhookOut, erro
 	return out, err
 }
 
-func (c *Client) WebhookDelete(ctx context.Context, id WebhookID) error {
+func (c *Client) WebhookDelete(ctx context.Context, id WebhookID) (WebhookOut, error) {
 	var out WebhookOut
-	return c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", id), &out)
+	err := c.HTTPDelete(ctx, fmt.Sprintf("webhook/%s", id), &out)
+	return out, err
 }
