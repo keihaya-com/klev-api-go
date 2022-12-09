@@ -55,7 +55,6 @@ func (c *Client) httpGet(ctx context.Context, path string, out interface{}) erro
 		return fmt.Errorf("could not prepare HTTP get: %w", err)
 	}
 
-	req.Header.Set("Content-Type", "application/json")
 	return c.httpDo(req, out)
 }
 
@@ -72,7 +71,6 @@ func (c *Client) httpPost(ctx context.Context, path string, in interface{}, out 
 		return fmt.Errorf("could not prepare HTTP post: %w", err)
 	}
 
-	req.Header.Set("Content-Type", "application/json")
 	return c.httpDo(req, out)
 }
 
@@ -84,12 +82,13 @@ func (c *Client) httpDelete(ctx context.Context, path string, out interface{}) e
 		return fmt.Errorf("could not prepare HTTP delete: %w", err)
 	}
 
-	req.Header.Set("Content-Type", "application/json")
 	return c.httpDo(req, out)
 }
 
 func (c *Client) httpDo(req *http.Request, out interface{}) error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	req.Header.Set("Content-Type", "application/json")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("could not execute request: %w", err)
@@ -104,7 +103,7 @@ func (c *Client) httpDo(req *http.Request, out interface{}) error {
 	if resp.StatusCode == http.StatusOK {
 		err = json.Unmarshal(bout, out)
 		if err != nil {
-			return fmt.Errorf("could not unmarshal: %w", err)
+			return fmt.Errorf("could not unmarshal response: %w", err)
 		}
 		return nil
 	} else {

@@ -7,7 +7,7 @@ import (
 
 type LogID string
 
-type LogIn struct {
+type LogCreate struct {
 	Metadata       string `json:"metadata"`
 	Compacting     bool   `json:"compacting"`
 	TrimBytes      int64  `json:"trim_bytes"`
@@ -16,11 +16,11 @@ type LogIn struct {
 	ExpireSeconds  int64  `json:"expire_seconds"`
 }
 
-type LogsOut struct {
-	Logs []LogOut `json:"logs"`
+type Logs struct {
+	Logs []Log `json:"logs"`
 }
 
-type LogOut struct {
+type Log struct {
 	LogID          LogID  `json:"log_id"`
 	Metadata       string `json:"metadata"`
 	Compacting     bool   `json:"compacting"`
@@ -30,32 +30,32 @@ type LogOut struct {
 	ExpireSeconds  int64  `json:"expire_seconds,omitempty"`
 }
 
-func (c *Client) LogsList(ctx context.Context) ([]LogOut, error) {
-	var out LogsOut
+func (c *Client) LogsList(ctx context.Context) ([]Log, error) {
+	var out Logs
 	err := c.httpGet(ctx, fmt.Sprintf("logs"), &out)
 	return out.Logs, err
 }
 
-func (c *Client) LogsFind(ctx context.Context, metadata string) ([]LogOut, error) {
-	var out LogsOut
+func (c *Client) LogsFind(ctx context.Context, metadata string) ([]Log, error) {
+	var out Logs
 	err := c.httpGet(ctx, fmt.Sprintf("logs?q=%s", metadata), &out)
 	return out.Logs, err
 }
 
-func (c *Client) LogCreate(ctx context.Context, in LogIn) (LogOut, error) {
-	var out LogOut
+func (c *Client) LogCreate(ctx context.Context, in LogCreate) (Log, error) {
+	var out Log
 	err := c.httpPost(ctx, fmt.Sprintf("logs"), in, &out)
 	return out, err
 }
 
-func (c *Client) LogGet(ctx context.Context, id LogID) (LogOut, error) {
-	var out LogOut
+func (c *Client) LogGet(ctx context.Context, id LogID) (Log, error) {
+	var out Log
 	err := c.httpGet(ctx, fmt.Sprintf("log/%s", id), &out)
 	return out, err
 }
 
-func (c *Client) LogDelete(ctx context.Context, id LogID) (LogOut, error) {
-	var out LogOut
+func (c *Client) LogDelete(ctx context.Context, id LogID) (Log, error) {
+	var out Log
 	err := c.httpDelete(ctx, fmt.Sprintf("log/%s", id), &out)
 	return out, err
 }
