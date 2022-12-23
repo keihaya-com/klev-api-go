@@ -156,8 +156,16 @@ type ConsumeMessage struct {
 }
 
 func (c *Client) Consume(ctx context.Context, id LogID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
+	return c.consume(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz))
+}
+
+func (c *Client) ConsumeOffset(ctx context.Context, id LogID, offsetID OffsetID, sz int32) (int64, []ConsumeMessage, error) {
+	return c.consume(ctx, fmt.Sprintf("messages/%s?offset_id=%s&len=%d&encoding=base64", id, offsetID, sz))
+}
+
+func (c *Client) consume(ctx context.Context, url string) (int64, []ConsumeMessage, error) {
 	var out ConsumeOut
-	err := c.httpGet(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz), &out)
+	err := c.httpGet(ctx, url, &out)
 	if err != nil {
 		return 0, nil, err
 	}

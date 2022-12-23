@@ -6,6 +6,7 @@ type Subject string
 
 var (
 	SubjectLogs     Subject = "logs"
+	SubjectOffsets  Subject = "offsets"
 	SubjectTokens   Subject = "tokens"
 	SubjectWebhooks Subject = "webhooks"
 )
@@ -16,6 +17,7 @@ var (
 	ActionList   Action = "list"
 	ActionCreate Action = "create"
 	ActionGet    Action = "get"
+	ActionUpdate Action = "update"
 	ActionDelete Action = "delete"
 
 	ActionPublish Action = "publish"
