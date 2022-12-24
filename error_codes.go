@@ -45,6 +45,7 @@ var (
 	ErrLogsNotFound         = "ERR_KLEV_LOGS_0001"
 	ErrLogsMaxMetadata      = "ERR_KLEV_LOGS_0002"
 	ErrLogsAgeCompactExpire = "ERR_KLEV_LOGS_0003"
+	ErrLogsMaxCount         = "ERR_KLEV_LOGS_0004"
 )
 
 // Messages errors
@@ -62,8 +63,10 @@ var (
 
 // Offsets errors
 var (
-	ErrOffsetsNotFound    = "ERR_KLEV_OFFSETS_0001"
-	ErrOffsetsMaxMetadata = "ERR_KLEV_OFFSETS_0002"
+	ErrOffsetsNotFound         = "ERR_KLEV_OFFSETS_0001"
+	ErrOffsetsMaxMetadata      = "ERR_KLEV_OFFSETS_0002"
+	ErrOffsetsMaxValueMetadata = "ERR_KLEV_OFFSETS_0003"
+	ErrOffsetsMaxCount         = "ERR_KLEV_OFFSETS_0004"
 )
 
 // Tokens errors
@@ -71,6 +74,7 @@ var (
 	ErrTokensNotFound     = "ERR_KLEV_TOKENS_0001"
 	ErrTokensInvalidToken = "ERR_KLEV_TOKENS_0002"
 	ErrTokensMaxMetadata  = "ERR_KLEV_TOKENS_0003"
+	ErrTokensMaxCount     = "ERR_KLEV_TOKENS_0004"
 )
 
 // Webhooks errors
@@ -78,4 +82,5 @@ var (
 	ErrWebhooksNotFound    = "ERR_KLEV_WEBHOOKS_0001"
 	ErrWebhooksMaxMetadata = "ERR_KLEV_WEBHOOKS_0002"
 	ErrWebhooksUnknownType = "ERR_KLEV_WEBHOOKS_0003"
+	ErrWebhooksMaxCount    = "ERR_KLEV_WEBHOOKS_0004"
 )
