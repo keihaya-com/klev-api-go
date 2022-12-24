@@ -38,7 +38,7 @@ func (c *Client) LogsList(ctx context.Context) ([]Log, error) {
 
 func (c *Client) LogsFind(ctx context.Context, metadata string) ([]Log, error) {
 	var out Logs
-	err := c.httpGet(ctx, fmt.Sprintf("logs?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("logs?metadata=%s", metadata), &out)
 	return out.Logs, err
 }
 

@@ -31,7 +31,7 @@ var (
 	ErrAPIInvalidACLObjectLog     = "ERR_KLEV_API_0020"
 	ErrAPIInvalidACLObjectWebhook = "ERR_KLEV_API_0021"
 	ErrAPIOffsetInvalidMissing    = "ERR_KLEV_API_0022"
-	ErrAPILogOffsetMissing        = "ERR_KLEV_API_0023"
+	ErrAPIOffsetLogMismatch       = "ERR_KLEV_API_0023"
 )
 
 // APIWebhooks errors

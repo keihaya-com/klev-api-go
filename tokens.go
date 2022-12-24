@@ -31,7 +31,7 @@ func (c *Client) TokensList(ctx context.Context) ([]Token, error) {
 
 func (c *Client) TokensFind(ctx context.Context, metadata string) ([]Token, error) {
 	var out Tokens
-	err := c.httpGet(ctx, fmt.Sprintf("tokens?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("tokens?metadata=%s", metadata), &out)
 	return out.Tokens, err
 }
 

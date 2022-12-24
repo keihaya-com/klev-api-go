@@ -33,7 +33,7 @@ func (c *Client) WebhooksList(ctx context.Context) ([]Webhook, error) {
 
 func (c *Client) WebhooksFind(ctx context.Context, metadata string) ([]Webhook, error) {
 	var out Webhooks
-	err := c.httpGet(ctx, fmt.Sprintf("webhooks?q=%s", metadata), &out)
+	err := c.httpGet(ctx, fmt.Sprintf("webhooks?metadata=%s", metadata), &out)
 	return out.Webhooks, err
 }
 
