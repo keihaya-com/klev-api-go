@@ -32,6 +32,8 @@ var (
 	ErrAPIInvalidACLObjectWebhook = "ERR_KLEV_API_0021"
 	ErrAPIOffsetInvalidMissing    = "ERR_KLEV_API_0022"
 	ErrAPIOffsetLogMismatch       = "ERR_KLEV_API_0023"
+	ErrAPIInvalidACLObjectOffset  = "ERR_KLEV_API_0024"
+	ErrAPIInvalidPoll             = "ERR_KLEV_API_0025"
 )
 
 // APIWebhooks errors
@@ -59,6 +61,7 @@ var (
 	ErrMessagesGetByOffsetInvalid    = "ERR_KLEV_MESSAGES_0007"
 	ErrMessagesGetByKeyNotCompacting = "ERR_KLEV_MESSAGES_0008"
 	ErrMessagesGetByKeyNotFound      = "ERR_KLEV_MESSAGES_0009"
+	ErrMessagesMaxPoll               = "ERR_KLEV_MESSAGES_0010"
 )
 
 // Offsets errors

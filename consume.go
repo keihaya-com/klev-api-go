@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -29,19 +30,11 @@ type ConsumeMessageOut struct {
 	Value  *string `json:"value,omitempty"`
 }
 
-type PublishIn struct {
-	Encoding string             `json:"encoding"`
-	Messages []PublishMessageIn `json:"messages"`
-}
-
-type PublishMessageIn struct {
-	Time  *int64  `json:"time"`
-	Key   *string `json:"key"`
-	Value *string `json:"value"`
-}
-
-type PublishOut struct {
-	NextOffset int64 `json:"next_offset"`
+type ConsumeMessage struct {
+	Offset int64
+	Time   time.Time
+	Key    []byte
+	Value  []byte
 }
 
 type GetOut struct {
@@ -57,115 +50,77 @@ type GetByKeyIn struct {
 	Key      *string `json:"key"`
 }
 
-type PostIn struct {
-	Encoding string  `json:"encoding"`
-	Time     *int64  `json:"time"`
-	Key      *string `json:"key"`
-	Value    *string `json:"value"`
+type consumeOpts struct {
+	offset   *int64
+	offsetID *OffsetID
+	sz       *int32
+	poll     *time.Duration
+	encoding string
 }
 
-type PostOut struct {
-	NextOffset int64 `json:"next_offset"`
-}
-
-type PublishMessage struct {
-	Time  time.Time
-	Key   []byte
-	Value []byte
-}
-
-func NewPublishMessage(key, value string) PublishMessage {
-	return PublishMessage{Key: []byte(key), Value: []byte(value)}
-}
-
-func NewPublishMessageKey(key string) PublishMessage {
-	return PublishMessage{Key: []byte(key)}
-}
-
-func NewPublishMessageValue(value string) PublishMessage {
-	return PublishMessage{Value: []byte(value)}
-}
-
-func (c *Client) Publish(ctx context.Context, id LogID, messages []PublishMessage) (int64, error) {
-	in := PublishIn{
-		Encoding: "base64",
+func (c consumeOpts) query() string {
+	var params []string
+	if c.offset != nil {
+		params = append(params, fmt.Sprintf("offset=%d", *c.offset))
 	}
-	for _, msg := range messages {
-		in.Messages = append(in.Messages, PublishMessageIn{
-			Time:  encodeTime(msg.Time),
-			Key:   encodeBase64(msg.Key),
-			Value: encodeBase64(msg.Value),
-		})
+	if c.offsetID != nil {
+		params = append(params, fmt.Sprintf("offset_id=%s", *c.offsetID))
+	}
+	if c.sz != nil {
+		params = append(params, fmt.Sprintf("len=%d", *c.sz))
+	}
+	if c.poll != nil {
+		params = append(params, fmt.Sprintf("poll=%d", (*c.poll)/time.Millisecond))
+	}
+	params = append(params, fmt.Sprintf("encoding=%s", c.encoding))
+	return strings.Join(params, "&")
+}
+
+type ConsumeOpt func(opts consumeOpts) consumeOpts
+
+func ConsumeOffset(offset int64) ConsumeOpt {
+	return func(opts consumeOpts) consumeOpts {
+		opts.offset = &offset
+		return opts
+	}
+}
+
+func ConsumeOffsetID(offsetID OffsetID) ConsumeOpt {
+	return func(opts consumeOpts) consumeOpts {
+		opts.offsetID = &offsetID
+		return opts
+	}
+}
+
+func ConsumeLen(sz int32) ConsumeOpt {
+	return func(opts consumeOpts) consumeOpts {
+		opts.sz = &sz
+		return opts
+	}
+}
+
+func ConsumePoll(d time.Duration) ConsumeOpt {
+	return func(opts consumeOpts) consumeOpts {
+		opts.poll = &d
+		return opts
+	}
+}
+
+func ConsumeEncoding(enc string) ConsumeOpt {
+	return func(opts consumeOpts) consumeOpts {
+		opts.encoding = enc
+		return opts
+	}
+}
+
+func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int64, []ConsumeMessage, error) {
+	copts := consumeOpts{encoding: "base64"}
+	for _, opt := range opts {
+		copts = opt(copts)
 	}
 
-	return c.PublishRaw(ctx, id, in)
-}
-
-func (c *Client) PublishRaw(ctx context.Context, id LogID, in PublishIn) (int64, error) {
-	var out PublishOut
-	err := c.httpPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
-	return out.NextOffset, err
-}
-
-func (c *Client) Post(ctx context.Context, id LogID, t time.Time, key []byte, value []byte) (int64, error) {
-	in := PostIn{
-		Encoding: "base64",
-		Time:     encodeTime(t),
-		Key:      encodeBase64(key),
-		Value:    encodeBase64(value),
-	}
-
-	return c.PostRaw(ctx, id, in)
-}
-
-func (c *Client) PostRaw(ctx context.Context, id LogID, in PostIn) (int64, error) {
-	var out PostOut
-	err := c.httpPost(ctx, fmt.Sprintf("message/%s", id), in, &out)
-	return out.NextOffset, err
-}
-
-func encodeTime(t time.Time) *int64 {
-	if t.IsZero() {
-		return nil
-	}
-	ts := t.UnixMicro()
-	return &ts
-}
-
-func encodeBase64(b []byte) *string {
-	if b == nil {
-		return nil
-	}
-	s := base64.StdEncoding.EncodeToString(b)
-	return &s
-}
-
-func encodeLiteral(b []byte) *string {
-	if b == nil {
-		return nil
-	}
-	s := string(b)
-	return &s
-}
-
-type ConsumeMessage struct {
-	Offset int64
-	Time   time.Time
-	Key    []byte
-	Value  []byte
-}
-
-func (c *Client) Consume(ctx context.Context, id LogID, offset int64, sz int32) (int64, []ConsumeMessage, error) {
-	return c.consume(ctx, fmt.Sprintf("messages/%s?offset=%d&len=%d&encoding=base64", id, offset, sz))
-}
-
-func (c *Client) ConsumeOffset(ctx context.Context, id LogID, offsetID OffsetID, sz int32) (int64, []ConsumeMessage, error) {
-	return c.consume(ctx, fmt.Sprintf("messages/%s?offset_id=%s&len=%d&encoding=base64", id, offsetID, sz))
-}
-
-func (c *Client) consume(ctx context.Context, url string) (int64, []ConsumeMessage, error) {
 	var out ConsumeOut
-	err := c.httpGet(ctx, url, &out)
+	err := c.httpGet(ctx, fmt.Sprintf("messages/%s?%s", id, copts.query()), &out)
 	if err != nil {
 		return 0, nil, err
 	}

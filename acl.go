@@ -1,6 +1,8 @@
 package api
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Subject string
 
@@ -10,6 +12,10 @@ var (
 	SubjectTokens   Subject = "tokens"
 	SubjectWebhooks Subject = "webhooks"
 )
+
+var AllSubjects = []Subject{
+	SubjectLogs, SubjectOffsets, SubjectTokens, SubjectWebhooks,
+}
 
 type Action string
 
@@ -23,6 +29,23 @@ var (
 	ActionPublish Action = "publish"
 	ActionConsume Action = "consume"
 )
+
+func (s Subject) Actions() []Action {
+	var actions = []Action{
+		ActionList,
+		ActionCreate,
+		ActionGet,
+		ActionUpdate,
+		ActionDelete,
+	}
+	if s == SubjectLogs {
+		actions = append(actions, []Action{
+			ActionPublish,
+			ActionConsume,
+		}...)
+	}
+	return actions
+}
 
 func ACLSubject(subject Subject) string {
 	return fmt.Sprintf("%s", subject)
