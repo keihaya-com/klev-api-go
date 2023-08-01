@@ -54,10 +54,13 @@ func (c *Client) OffsetGet(ctx context.Context, id OffsetID) (Offset, error) {
 }
 
 func (c *Client) OffsetSet(ctx context.Context, id OffsetID, value int64, valueMetadata string) (Offset, error) {
-	var in = OffsetSet{
+	return c.OffsetSetRaw(ctx, id, OffsetSet{
 		Value:         value,
 		ValueMetadata: valueMetadata,
-	}
+	})
+}
+
+func (c *Client) OffsetSetRaw(ctx context.Context, id OffsetID, in OffsetSet) (Offset, error) {
 	var out Offset
 	err := c.httpPost(ctx, fmt.Sprintf("offset/%s", id), in, &out)
 	return out, err

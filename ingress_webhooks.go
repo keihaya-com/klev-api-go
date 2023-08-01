@@ -53,15 +53,18 @@ func (c *Client) IngressWebhookGet(ctx context.Context, id IngressWebhookID) (In
 	return out, err
 }
 
-func (c *Client) IngressWebhookDelete(ctx context.Context, id IngressWebhookID) (IngressWebhook, error) {
+func (c *Client) IngressWebhookRotate(ctx context.Context, id IngressWebhookID, secret string) (IngressWebhook, error) {
+	return c.IngressWebhookRotateRaw(ctx, id, IngressWebhookRotate{secret})
+}
+
+func (c *Client) IngressWebhookRotateRaw(ctx context.Context, id IngressWebhookID, in IngressWebhookRotate) (IngressWebhook, error) {
 	var out IngressWebhook
-	err := c.httpDelete(ctx, fmt.Sprintf("ingress_webhook/%s", id), &out)
+	err := c.httpPatch(ctx, fmt.Sprintf("ingress_webhook/%s/secret", id), in, &out)
 	return out, err
 }
 
-func (c *Client) IngressWebhookRotate(ctx context.Context, id IngressWebhookID, secret string) (IngressWebhook, error) {
-	var in = IngressWebhookRotate{secret}
+func (c *Client) IngressWebhookDelete(ctx context.Context, id IngressWebhookID) (IngressWebhook, error) {
 	var out IngressWebhook
-	err := c.httpPatch(ctx, fmt.Sprintf("ingress_webhook/%s/secret", id), in, &out)
+	err := c.httpDelete(ctx, fmt.Sprintf("ingress_webhook/%s", id), &out)
 	return out, err
 }

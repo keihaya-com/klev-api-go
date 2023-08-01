@@ -96,7 +96,7 @@ func (c encodingBase64) DecodeData(val *string) ([]byte, error) {
 var EncodingBase64 encodingBase64
 var _ MessageEncoding = EncodingBase64
 
-func parseEncoding(s string) (MessageEncoding, error) {
+func ParseMessageEncoding(s string) (MessageEncoding, error) {
 	switch s {
 	case "base64":
 		return EncodingBase64, nil

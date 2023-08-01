@@ -126,7 +126,7 @@ func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int
 		return 0, nil, err
 	}
 
-	coder, err := parseEncoding(out.Encoding)
+	coder, err := ParseMessageEncoding(out.Encoding)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -178,7 +178,7 @@ func (c *Client) GetByKey(ctx context.Context, id LogID, key []byte) (ConsumeMes
 }
 
 func (out GetOut) Decode() (ConsumeMessage, error) {
-	coder, err := parseEncoding(out.Encoding)
+	coder, err := ParseMessageEncoding(out.Encoding)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}

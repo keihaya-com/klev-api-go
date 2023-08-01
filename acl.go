@@ -33,7 +33,7 @@ var (
 	ActionPublish Action = "publish"
 	ActionConsume Action = "consume"
 
-	// Egress webhooks
+	// Webhooks
 	ActionRotate Action = "rotate"
 	ActionStatus Action = "status"
 )

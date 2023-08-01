@@ -70,14 +70,12 @@ func (c *Client) EgressWebhookGet(ctx context.Context, id EgressWebhookID) (Egre
 	return out, err
 }
 
-func (c *Client) EgressWebhookDelete(ctx context.Context, id EgressWebhookID) (EgressWebhook, error) {
-	var out EgressWebhook
-	err := c.httpDelete(ctx, fmt.Sprintf("egress_webhook/%s", id), &out)
-	return out, err
-}
-
 func (c *Client) EgressWebhookRotate(ctx context.Context, id EgressWebhookID, expireDuration time.Duration) (EgressWebhook, error) {
 	var in = EgressWebhookRotate{int64(expireDuration.Seconds())}
+	return c.EgressWebhookRotateRaw(ctx, id, in)
+}
+
+func (c *Client) EgressWebhookRotateRaw(ctx context.Context, id EgressWebhookID, in EgressWebhookRotate) (EgressWebhook, error) {
 	var out EgressWebhook
 	err := c.httpPatch(ctx, fmt.Sprintf("egress_webhook/%s/secret", id), in, &out)
 	return out, err
@@ -86,5 +84,11 @@ func (c *Client) EgressWebhookRotate(ctx context.Context, id EgressWebhookID, ex
 func (c *Client) EgressWebhookStatus(ctx context.Context, id EgressWebhookID) (EgressWebhookStatus, error) {
 	var out EgressWebhookStatus
 	err := c.httpGet(ctx, fmt.Sprintf("egress_webhook/%s/status", id), &out)
+	return out, err
+}
+
+func (c *Client) EgressWebhookDelete(ctx context.Context, id EgressWebhookID) (EgressWebhook, error) {
+	var out EgressWebhook
+	err := c.httpDelete(ctx, fmt.Sprintf("egress_webhook/%s", id), &out)
 	return out, err
 }
