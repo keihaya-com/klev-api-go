@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"strings"
 	"time"
@@ -57,7 +56,7 @@ type consumeOpts struct {
 	offsetID *OffsetID
 	sz       *int32
 	poll     *time.Duration
-	encoding string
+	encoding MessageEncoding
 }
 
 func (c consumeOpts) query() string {
@@ -108,7 +107,7 @@ func ConsumePoll(d time.Duration) ConsumeOpt {
 	}
 }
 
-func ConsumeEncoding(enc string) ConsumeOpt {
+func ConsumeEncoding(enc MessageEncoding) ConsumeOpt {
 	return func(opts consumeOpts) consumeOpts {
 		opts.encoding = enc
 		return opts
@@ -116,7 +115,7 @@ func ConsumeEncoding(enc string) ConsumeOpt {
 }
 
 func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int64, []ConsumeMessage, error) {
-	copts := consumeOpts{encoding: "base64"}
+	copts := consumeOpts{encoding: EncodingBase64}
 	for _, opt := range opts {
 		copts = opt(copts)
 	}
@@ -127,25 +126,25 @@ func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int
 		return 0, nil, err
 	}
 
-	var decoder = decodeBase64
-	if out.Encoding == "string" {
-		decoder = decodeLiteral
+	coder, err := parseEncoding(out.Encoding)
+	if err != nil {
+		return 0, nil, err
 	}
 
 	var msgs []ConsumeMessage
 	for _, msg := range out.Messages {
-		k, err := decoder(msg.Key)
+		k, err := coder.DecodeData(msg.Key)
 		if err != nil {
 			return 0, nil, err
 		}
-		v, err := decoder(msg.Value)
+		v, err := coder.DecodeData(msg.Value)
 		if err != nil {
 			return 0, nil, err
 		}
 
 		msgs = append(msgs, ConsumeMessage{
 			Offset: msg.Offset,
-			Time:   decodeTime(msg.Time),
+			Time:   coder.DecodeTime(msg.Time),
 			Key:    k,
 			Value:  v,
 		})
@@ -161,74 +160,42 @@ func (c *Client) Get(ctx context.Context, id LogID, offset int64) (ConsumeMessag
 		return ConsumeMessage{}, err
 	}
 
-	var decoder = decodeBase64
-	if out.Encoding == "string" {
-		decoder = decodeLiteral
-	}
-
-	k, err := decoder(out.Key)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-	v, err := decoder(out.Value)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-
-	return ConsumeMessage{
-		Offset: out.Offset,
-		Time:   decodeTime(out.Time),
-		Key:    k,
-		Value:  v,
-	}, err
+	return out.Decode()
 }
 
 func (c *Client) GetByKey(ctx context.Context, id LogID, key []byte) (ConsumeMessage, error) {
+	coder := EncodingBase64
 	var out GetOut
 	err := c.httpPost(ctx, fmt.Sprintf("message/%s/key", id), GetByKeyIn{
-		Encoding: "base64",
-		Key:      encodeBase64(key),
+		Encoding: coder.String(),
+		Key:      coder.EncodeData(key),
 	}, &out)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
 
-	var decoder = decodeBase64
-	if out.Encoding == "string" {
-		decoder = decodeLiteral
-	}
+	return out.Decode()
+}
 
-	k, err := decoder(out.Key)
+func (out GetOut) Decode() (ConsumeMessage, error) {
+	coder, err := parseEncoding(out.Encoding)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
-	v, err := decoder(out.Value)
+
+	k, err := coder.DecodeData(out.Key)
+	if err != nil {
+		return ConsumeMessage{}, err
+	}
+	v, err := coder.DecodeData(out.Value)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
 
 	return ConsumeMessage{
 		Offset: out.Offset,
-		Time:   decodeTime(out.Time),
+		Time:   coder.DecodeTime(out.Time),
 		Key:    k,
 		Value:  v,
-	}, err
-}
-
-func decodeTime(ts int64) time.Time {
-	return time.UnixMicro(ts).UTC()
-}
-
-func decodeBase64(s *string) ([]byte, error) {
-	if s == nil {
-		return nil, nil
-	}
-	return base64.StdEncoding.DecodeString(*s)
-}
-
-func decodeLiteral(s *string) ([]byte, error) {
-	if s == nil {
-		return nil, nil
-	}
-	return []byte(*s), nil
+	}, nil
 }

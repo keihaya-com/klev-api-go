@@ -7,27 +7,35 @@ import (
 type Subject string
 
 var (
-	SubjectLogs     Subject = "logs"
-	SubjectOffsets  Subject = "offsets"
-	SubjectTokens   Subject = "tokens"
-	SubjectWebhooks Subject = "webhooks"
+	SubjectLogs            Subject = "logs"
+	SubjectOffsets         Subject = "offsets"
+	SubjectTokens          Subject = "tokens"
+	SubjectIngressWebhooks Subject = "ingress_webhooks"
+	SubjectEgressWebhooks  Subject = "egress_webhooks"
 )
 
 var AllSubjects = []Subject{
-	SubjectLogs, SubjectOffsets, SubjectTokens, SubjectWebhooks,
+	SubjectLogs, SubjectOffsets, SubjectTokens,
+	SubjectIngressWebhooks, SubjectEgressWebhooks,
 }
 
 type Action string
 
 var (
+	// Generic
 	ActionList   Action = "list"
 	ActionCreate Action = "create"
 	ActionGet    Action = "get"
 	ActionUpdate Action = "update"
 	ActionDelete Action = "delete"
 
+	// Messages
 	ActionPublish Action = "publish"
 	ActionConsume Action = "consume"
+
+	// Egress webhooks
+	ActionRotate Action = "rotate"
+	ActionStatus Action = "status"
 )
 
 func (s Subject) Actions() []Action {
@@ -38,11 +46,13 @@ func (s Subject) Actions() []Action {
 		ActionUpdate,
 		ActionDelete,
 	}
-	if s == SubjectLogs {
-		actions = append(actions, []Action{
-			ActionPublish,
-			ActionConsume,
-		}...)
+	switch s {
+	case SubjectLogs:
+		actions = append(actions, ActionPublish, ActionConsume)
+	case SubjectEgressWebhooks:
+		actions = append(actions, ActionRotate, ActionStatus)
+	case SubjectIngressWebhooks:
+		actions = append(actions, ActionRotate)
 	}
 	return actions
 }

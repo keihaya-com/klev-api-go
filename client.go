@@ -59,6 +59,14 @@ func (c *Client) httpGet(ctx context.Context, path string, out interface{}) erro
 }
 
 func (c *Client) httpPost(ctx context.Context, path string, in interface{}, out interface{}) error {
+	return c.httpUpdate(ctx, http.MethodPost, path, in, out)
+}
+
+func (c *Client) httpPatch(ctx context.Context, path string, in interface{}, out interface{}) error {
+	return c.httpUpdate(ctx, http.MethodPatch, path, in, out)
+}
+
+func (c *Client) httpUpdate(ctx context.Context, method string, path string, in interface{}, out interface{}) error {
 	bin, err := json.Marshal(in)
 	if err != nil {
 		return fmt.Errorf("could not marshal json: %w", err)
@@ -66,7 +74,7 @@ func (c *Client) httpPost(ctx context.Context, path string, in interface{}, out 
 
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, target, bytes.NewBuffer(bin))
+	req, err := http.NewRequestWithContext(ctx, method, target, bytes.NewBuffer(bin))
 	if err != nil {
 		return fmt.Errorf("could not prepare HTTP post: %w", err)
 	}
