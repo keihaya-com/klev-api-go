@@ -16,8 +16,12 @@ import (
 
 var retMessage = kleverr.Ret1[ConsumeMessage]
 
-func IngressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (ConsumeMessage, error) {
-	payload, err := IngressWebhookKlevValidateRaw(w, r, now, secret)
+func IngressWebhookKlevValidateMessage(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (ConsumeMessage, error) {
+	if r.Header.Get("Content-Type") != "application/json" {
+		return retMessage(ErrKlevInvalidContentTypeJson())
+	}
+
+	payload, err := ingressWebhookKlevValidate(w, r, now, secret)
 	if err != nil {
 		return retMessage(err)
 	}
@@ -38,11 +42,14 @@ func IngressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func
 	}, nil
 }
 
-func IngressWebhookKlevValidateRaw(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
-	if r.Header.Get("Content-Type") != "application/json" {
-		return nil, ErrKlevInvalidContentType()
+func IngressWebhookKlevValidateData(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
+	if r.Header.Get("Content-Type") != "application/octet-stream" {
+		return nil, ErrKlevInvalidContentTypeOctet()
 	}
+	return ingressWebhookKlevValidate(w, r, now, secret)
+}
 
+func ingressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
 	r.Body = http.MaxBytesReader(w, r.Body, 128*1024)
 	payload, err := io.ReadAll(r.Body)
 	if err != nil {

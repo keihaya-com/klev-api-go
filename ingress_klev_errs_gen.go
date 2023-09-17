@@ -47,9 +47,16 @@ func ErrKlevSignatureMismatch() error {
 	}
 }
 
-func ErrKlevInvalidContentType() error {
+func ErrKlevInvalidContentTypeJson() error {
 	return &ErrorOut{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0007",
 		Message: "'Content-Type: application/json' header is required",
+	}
+}
+
+func ErrKlevInvalidContentTypeOctet() error {
+	return &ErrorOut{
+		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0008",
+		Message: "'Content-Type: application/octet-stream' header is required",
 	}
 }
