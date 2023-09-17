@@ -93,7 +93,8 @@ var (
 
 // EgressWebhooks errors
 var (
-	ErrEgressWebhooksEgressNotFound    = "ERR_KLEV_EGRESS_WEBHOOKS_0001"
-	ErrEgressWebhooksEgressMaxMetadata = "ERR_KLEV_EGRESS_WEBHOOKS_0002"
-	ErrEgressWebhooksEgressMaxCount    = "ERR_KLEV_EGRESS_WEBHOOKS_0003"
+	ErrEgressWebhooksEgressNotFound       = "ERR_KLEV_EGRESS_WEBHOOKS_0001"
+	ErrEgressWebhooksEgressMaxMetadata    = "ERR_KLEV_EGRESS_WEBHOOKS_0002"
+	ErrEgressWebhooksEgressMaxCount       = "ERR_KLEV_EGRESS_WEBHOOKS_0003"
+	ErrEgressWebhooksEgressUnknownPayload = "ERR_KLEV_EGRESS_WEBHOOKS_0004"
 )

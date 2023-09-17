@@ -17,19 +17,41 @@ import (
 var retMessage = kleverr.Ret1[ConsumeMessage]
 
 func IngressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (ConsumeMessage, error) {
+	payload, err := IngressWebhookKlevValidateRaw(w, r, now, secret)
+	if err != nil {
+		return retMessage(err)
+	}
+
+	var out GetOut
+	if err := json.Unmarshal(payload, &out); err != nil {
+		return retMessage(err)
+	}
+	msg, err := out.Decode()
+	if err != nil {
+		return retMessage(err)
+	}
+	return ConsumeMessage{
+		Offset: msg.Offset,
+		Time:   msg.Time,
+		Key:    msg.Key,
+		Value:  msg.Value,
+	}, nil
+}
+
+func IngressWebhookKlevValidateRaw(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
 	if r.Header.Get("Content-Type") != "application/json" {
-		return retMessage(ErrKlevInvalidContentType())
+		return nil, ErrKlevInvalidContentType()
 	}
 
 	r.Body = http.MaxBytesReader(w, r.Body, 128*1024)
 	payload, err := io.ReadAll(r.Body)
 	if err != nil {
-		return retMessage(err)
+		return nil, err
 	}
 
 	hs := r.Header.Get("X-Klev-Signature")
 	if len(hs) == 0 {
-		return retMessage(ErrKlevNotSigned())
+		return nil, ErrKlevNotSigned()
 	}
 
 	var ts string
@@ -44,10 +66,10 @@ func IngressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func
 		case "t":
 			timestamp, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
-				return retMessage(ErrKlevTimestampInvalid(v))
+				return nil, ErrKlevTimestampInvalid(v)
 			}
 			if now().Sub(time.Unix(timestamp, 0)) > 5*time.Minute {
-				return retMessage(ErrKlevTimestampExpired(v))
+				return nil, ErrKlevTimestampExpired(v)
 			}
 			ts = v
 		case "v1":
@@ -62,35 +84,22 @@ func IngressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func
 	}
 
 	if len(ts) == 0 {
-		return retMessage(ErrKlevSignatureTimeMissing(hs))
+		return nil, ErrKlevSignatureTimeMissing(hs)
 	}
 
 	if len(sigs) == 0 {
-		return retMessage(ErrKlevSignatureMissing(hs))
+		return nil, ErrKlevSignatureMissing(hs)
 	}
 
 	expectedSig := IngressWebhookKlevSignature(ts, payload, secret)
 
 	for _, sig := range sigs {
 		if hmac.Equal(expectedSig, sig) {
-			var out GetOut
-			if err := json.Unmarshal(payload, &out); err != nil {
-				return retMessage(err)
-			}
-			msg, err := out.Decode()
-			if err != nil {
-				return retMessage(err)
-			}
-			return ConsumeMessage{
-				Offset: msg.Offset,
-				Time:   msg.Time,
-				Key:    msg.Key,
-				Value:  msg.Value,
-			}, nil
+			return payload, nil
 		}
 	}
 
-	return retMessage(ErrKlevSignatureMismatch())
+	return nil, ErrKlevSignatureMismatch()
 }
 
 func IngressWebhookKlevSignature(ts string, payload []byte, secret string) []byte {

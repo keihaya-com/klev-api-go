@@ -12,6 +12,7 @@ type EgressWebhookCreate struct {
 	Metadata    string `json:"metadata"`
 	LogID       LogID  `json:"log_id"`
 	Destination string `json:"destination"`
+	Payload     string `json:"payload"`
 }
 
 type EgressWebhooks struct {
@@ -23,6 +24,7 @@ type EgressWebhook struct {
 	Metadata    string          `json:"metadata"`
 	LogID       LogID           `json:"log_id"`
 	Destination string          `json:"destination"`
+	Payload     string          `json:"payload"`
 	Secret      string          `json:"secret,omitempty"`
 }
 
