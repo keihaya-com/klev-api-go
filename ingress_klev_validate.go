@@ -30,16 +30,7 @@ func IngressWebhookKlevValidateMessage(w http.ResponseWriter, r *http.Request, n
 	if err := json.Unmarshal(payload, &out); err != nil {
 		return retMessage(err)
 	}
-	msg, err := out.Decode()
-	if err != nil {
-		return retMessage(err)
-	}
-	return ConsumeMessage{
-		Offset: msg.Offset,
-		Time:   msg.Time,
-		Key:    msg.Key,
-		Value:  msg.Value,
-	}, nil
+	return out.Decode()
 }
 
 func IngressWebhookKlevValidateData(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
