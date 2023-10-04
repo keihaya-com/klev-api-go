@@ -102,19 +102,13 @@ func (c *Client) httpDo(req *http.Request, out interface{}) error {
 		return fmt.Errorf("could not execute request: %w", err)
 	}
 
+	defer resp.Body.Close()
 	bout, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("could not read body: %w", err)
 	}
-	resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		err = json.Unmarshal(bout, out)
-		if err != nil {
-			return fmt.Errorf("could not unmarshal response: %w", err)
-		}
-		return nil
-	} else {
+	if resp.StatusCode >= 400 {
 		var eout ErrorOut
 		err = json.Unmarshal(bout, &eout)
 		if err != nil {
@@ -122,4 +116,10 @@ func (c *Client) httpDo(req *http.Request, out interface{}) error {
 		}
 		return &eout
 	}
+
+	err = json.Unmarshal(bout, out)
+	if err != nil {
+		return fmt.Errorf("could not unmarshal response: %w", err)
+	}
+	return nil
 }

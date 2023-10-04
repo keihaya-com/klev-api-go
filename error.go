@@ -6,12 +6,13 @@ import (
 )
 
 type ErrorOut struct {
-	Code    string `json:"code,omitempty"`
-	Message string `json:"message,omitempty"`
+	ErrorCode string `json:"error,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Details   string `json:"details,omitempty"`
 }
 
 func (e *ErrorOut) Error() string {
-	return fmt.Sprintf("(%s) %s", e.Code, e.Message)
+	return fmt.Sprintf("(%s) %s\n\n%s", e.ErrorCode, e.Message, e.Details)
 }
 
 func GetError(err error) *ErrorOut {
@@ -24,5 +25,5 @@ func GetError(err error) *ErrorOut {
 
 func IsError(err error, code string) bool {
 	apie := GetError(err)
-	return apie != nil && apie.Code == code
+	return apie != nil && apie.ErrorCode == code
 }

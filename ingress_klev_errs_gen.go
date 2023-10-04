@@ -7,56 +7,64 @@ import (
 
 func ErrKlevNotSigned() error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0001",
-		Message: "'X-Klev-Signature' header is missing",
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0001",
+		Message:   "Missing klev signature header",
+		Details:   "'X-Klev-Signature' header is missing",
 	}
 }
 
 func ErrKlevTimestampInvalid(ts string) error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0002",
-		Message: fmt.Sprintf("not a valid timestamp: %s", ts),
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0002",
+		Message:   "Invalid timestamp",
+		Details:   fmt.Sprintf("'%s' is not a valid timestamp", ts),
 	}
 }
 
 func ErrKlevTimestampExpired(ts string) error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0003",
-		Message: fmt.Sprintf("timestamp is too old: %s", ts),
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0003",
+		Message:   "Expired timestamp",
+		Details:   fmt.Sprintf("'%s' is no longer valid, too old", ts),
 	}
 }
 
 func ErrKlevSignatureTimeMissing(h string) error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0004",
-		Message: fmt.Sprintf("'X-Klev-Signature' header is missing time: %s", h),
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0004",
+		Message:   "Signature timestamp missing",
+		Details:   fmt.Sprintf("'X-Klev-Signature' header is missing timestamp: %s", h),
 	}
 }
 
 func ErrKlevSignatureMissing(h string) error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0005",
-		Message: fmt.Sprintf("'X-Klev-Signature' header is missing signature: %s", h),
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0005",
+		Message:   "Signature missing",
+		Details:   fmt.Sprintf("'X-Klev-Signature' header is missing signature: %s", h),
 	}
 }
 
 func ErrKlevSignatureMismatch() error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0006",
-		Message: "message signature did not match",
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0006",
+		Message:   "Signature mismatch",
+		Details:   "Message signature did not match the expected signature",
 	}
 }
 
 func ErrKlevInvalidContentTypeJson() error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0007",
-		Message: "'Content-Type: application/json' header is required",
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0007",
+		Message:   "Invalid content type",
+		Details:   "'Content-Type: application/json' header is required",
 	}
 }
 
 func ErrKlevInvalidContentTypeOctet() error {
 	return &ErrorOut{
-		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0008",
-		Message: "'Content-Type: application/octet-stream' header is required",
+		ErrorCode: "ERR_KLEV_WEBHOOKS_KLEV_0008",
+		Message:   "Invalid content type",
+		Details:   "'Content-Type: application/octet-stream' header is required",
 	}
 }

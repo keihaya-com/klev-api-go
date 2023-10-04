@@ -7,42 +7,55 @@ var (
 	ErrInternalMaintenanceError = "ERR_KLEV_INTERNAL_0002"
 )
 
+// ID errors
+var (
+	ErrIDInvalidFormat = "ERR_KLEV_ID_0001"
+	ErrIDInvalidPrefix = "ERR_KLEV_ID_0002"
+	ErrIDInvalidSuffix = "ERR_KLEV_ID_0003"
+)
+
 // API errors
 var (
-	ErrAPIInvalidContentType             = "ERR_KLEV_API_0001"
-	ErrAPINoAuthorizationHeader          = "ERR_KLEV_API_0002"
-	ErrAPIInvalidToken                   = "ERR_KLEV_API_0003"
-	ErrAPIInvalidPayment                 = "ERR_KLEV_API_0004"
+	ErrAPIContentTypeInvalid             = "ERR_KLEV_API_0001"
+	ErrAPIAuthorizationHeaderInvalid     = "ERR_KLEV_API_0002"
+	ErrAPISubscriptionMissing            = "ERR_KLEV_API_0004"
 	ErrAPIPathNotFound                   = "ERR_KLEV_API_0005"
 	ErrAPIMethodNotAllowed               = "ERR_KLEV_API_0006"
-	ErrAPITokenInvalidMissing            = "ERR_KLEV_API_0007"
-	ErrAPILogInvalidMissing              = "ERR_KLEV_API_0008"
+	ErrAPITokenPathInvalid               = "ERR_KLEV_API_0007"
+	ErrAPILogPathInvalid                 = "ERR_KLEV_API_0008"
 	ErrAPIInvalidJson                    = "ERR_KLEV_API_0009"
-	ErrAPIInvalidOffset                  = "ERR_KLEV_API_0010"
-	ErrAPIInvalidLen                     = "ERR_KLEV_API_0011"
-	ErrAPIInvalidEncoding                = "ERR_KLEV_API_0012"
-	ErrAPIIngressWebhookInvalidMissing   = "ERR_KLEV_API_0013"
-	ErrAPIInsufficientPermissions        = "ERR_KLEV_API_0014"
-	ErrAPIInvalidACLItemFormat           = "ERR_KLEV_API_0015"
-	ErrAPIInvalidACLSubject              = "ERR_KLEV_API_0016"
-	ErrAPIInvalidACLAction               = "ERR_KLEV_API_0017"
-	ErrAPIInvalidACLObjectAction         = "ERR_KLEV_API_0018"
-	ErrAPIInvalidACLObjectToken          = "ERR_KLEV_API_0019"
-	ErrAPIInvalidACLObjectLog            = "ERR_KLEV_API_0020"
-	ErrAPIInvalidACLObjectIngressWebhook = "ERR_KLEV_API_0021"
-	ErrAPIOffsetInvalidMissing           = "ERR_KLEV_API_0022"
+	ErrAPIOffsetParameterInvalid         = "ERR_KLEV_API_0010"
+	ErrAPILenParameterInvalid            = "ERR_KLEV_API_0011"
+	ErrAPIEncodingParameterInvalid       = "ERR_KLEV_API_0012"
+	ErrAPIIngressWebhookPathInvalid      = "ERR_KLEV_API_0013"
+	ErrAPIACLInsufficientPermissions     = "ERR_KLEV_API_0014"
+	ErrAPIACLItemFormatInvalid           = "ERR_KLEV_API_0015"
+	ErrAPIACLSubjectInvalid              = "ERR_KLEV_API_0016"
+	ErrAPIACLActionInvalid               = "ERR_KLEV_API_0017"
+	ErrAPIACLObjectActionInvalid         = "ERR_KLEV_API_0018"
+	ErrAPIACLObjectTokenInvalid          = "ERR_KLEV_API_0019"
+	ErrAPIACLObjectLogInvalid            = "ERR_KLEV_API_0020"
+	ErrAPIACLObjectIngressWebhookInvalid = "ERR_KLEV_API_0021"
+	ErrAPIOffsetPathInvalid              = "ERR_KLEV_API_0022"
 	ErrAPIOffsetLogMismatch              = "ERR_KLEV_API_0023"
-	ErrAPIInvalidACLObjectOffset         = "ERR_KLEV_API_0024"
-	ErrAPIInvalidPoll                    = "ERR_KLEV_API_0025"
-	ErrAPIInvalidACLObjectEgressWebhook  = "ERR_KLEV_API_0026"
-	ErrAPIEgressWebhookInvalidMissing    = "ERR_KLEV_API_0027"
-	ErrAPIInvalidExpireDuration          = "ERR_KLEV_API_0028"
+	ErrAPIACLObjectOffsetInvalid         = "ERR_KLEV_API_0024"
+	ErrAPIPollParameterInvalid           = "ERR_KLEV_API_0025"
+	ErrAPIACLObjectEgressWebhookInvalid  = "ERR_KLEV_API_0026"
+	ErrAPIEgressWebhookPathInvalid       = "ERR_KLEV_API_0027"
+	ErrAPIContentTypeMissing             = "ERR_KLEV_API_0029"
+	ErrAPIAuthorizationHeaderMissing     = "ERR_KLEV_API_0030"
+	ErrAPIEncodingInvalid                = "ERR_KLEV_API_0031"
+	ErrAPIEncodingFieldInvalid           = "ERR_KLEV_API_0032"
+	ErrAPIOffsetIDParameterInvalid       = "ERR_KLEV_API_0033"
+	ErrAPILogIDFieldInvalid              = "ERR_KLEV_API_0034"
+	ErrAPILogIDParameterInvalid          = "ERR_KLEV_API_0035"
+	ErrAPIAuthenticationFailed           = "ERR_KLEV_API_0036"
 )
 
 // APIWebhooks errors
 var (
-	ErrAPIWebhooksPathNotFound          = "ERR_KLEV_API_WEBHOOKS_0001"
-	ErrAPIWebhooksWebhookInvalidMissing = "ERR_KLEV_API_WEBHOOKS_0002"
+	ErrAPIWebhooksPathNotFound              = "ERR_KLEV_API_WEBHOOKS_0001"
+	ErrAPIWebhooksIngressWebhookPathInvalid = "ERR_KLEV_API_WEBHOOKS_0002"
 )
 
 // Logs errors
@@ -77,17 +90,19 @@ var (
 
 // Tokens errors
 var (
-	ErrTokensNotFound     = "ERR_KLEV_TOKENS_0001"
-	ErrTokensInvalidToken = "ERR_KLEV_TOKENS_0002"
-	ErrTokensMaxMetadata  = "ERR_KLEV_TOKENS_0003"
-	ErrTokensMaxCount     = "ERR_KLEV_TOKENS_0004"
+	ErrTokensNotFound          = "ERR_KLEV_TOKENS_0001"
+	ErrTokensMaxMetadata       = "ERR_KLEV_TOKENS_0003"
+	ErrTokensMaxCount          = "ERR_KLEV_TOKENS_0004"
+	ErrTokensAuthInvalidFormat = "ERR_KLEV_TOKENS_0005"
+	ErrTokensAuthInvalidID     = "ERR_KLEV_TOKENS_0006"
+	ErrTokensAuthInvalid       = "ERR_KLEV_TOKENS_0007"
 )
 
 // IngressWebhooks errors
 var (
 	ErrIngressWebhooksIngressNotFound    = "ERR_KLEV_INGRESS_WEBHOOKS_0001"
 	ErrIngressWebhooksIngressMaxMetadata = "ERR_KLEV_INGRESS_WEBHOOKS_0002"
-	ErrIngressWebhooksIngressUnknownType = "ERR_KLEV_INGRESS_WEBHOOKS_0003"
+	ErrIngressWebhooksIngressInvalidType = "ERR_KLEV_INGRESS_WEBHOOKS_0003"
 	ErrIngressWebhooksIngressMaxCount    = "ERR_KLEV_INGRESS_WEBHOOKS_0004"
 )
 
@@ -96,5 +111,5 @@ var (
 	ErrEgressWebhooksEgressNotFound       = "ERR_KLEV_EGRESS_WEBHOOKS_0001"
 	ErrEgressWebhooksEgressMaxMetadata    = "ERR_KLEV_EGRESS_WEBHOOKS_0002"
 	ErrEgressWebhooksEgressMaxCount       = "ERR_KLEV_EGRESS_WEBHOOKS_0003"
-	ErrEgressWebhooksEgressUnknownPayload = "ERR_KLEV_EGRESS_WEBHOOKS_0004"
+	ErrEgressWebhooksEgressInvalidPayload = "ERR_KLEV_EGRESS_WEBHOOKS_0004"
 )
