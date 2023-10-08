@@ -7,16 +7,60 @@ import (
 	"time"
 )
 
-const (
-	// OffsetOldest represents the smallest offset still available
-	// Use it to consume all messages, starting at the beginning of the log
-	OffsetOldest int64 = -2
-	// OffsetNewest represents the offset that will be used for the next produce
-	// Use it to consume messages, starting from the next one produced
-	OffsetNewest int64 = -1
-	// OffsetInvalid is the offset returned when error is detected
-	OffsetInvalid int64 = -3
-)
+type PublishIn struct {
+	Encoding string             `json:"encoding"`
+	Messages []PublishMessageIn `json:"messages"`
+}
+
+type PublishMessageIn struct {
+	Time  *int64  `json:"time"`
+	Key   *string `json:"key"`
+	Value *string `json:"value"`
+}
+
+type PublishOut struct {
+	NextOffset int64 `json:"next_offset"`
+}
+
+type PublishMessage struct {
+	Time  time.Time
+	Key   []byte
+	Value []byte
+}
+
+func NewPublishMessage(key, value string) PublishMessage {
+	return PublishMessage{Key: []byte(key), Value: []byte(value)}
+}
+
+func NewPublishMessageKey(key string) PublishMessage {
+	return PublishMessage{Key: []byte(key)}
+}
+
+func NewPublishMessageValue(value string) PublishMessage {
+	return PublishMessage{Value: []byte(value)}
+}
+
+func (c *Client) Publish(ctx context.Context, id LogID, messages []PublishMessage) (int64, error) {
+	coder := EncodingBase64
+	in := PublishIn{
+		Encoding: coder.String(),
+	}
+	for _, msg := range messages {
+		in.Messages = append(in.Messages, PublishMessageIn{
+			Time:  coder.EncodeTimeOpt(msg.Time),
+			Key:   coder.EncodeData(msg.Key),
+			Value: coder.EncodeData(msg.Value),
+		})
+	}
+
+	return c.PublishRaw(ctx, id, in)
+}
+
+func (c *Client) PublishRaw(ctx context.Context, id LogID, in PublishIn) (int64, error) {
+	var out PublishOut
+	err := c.httpPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
+	return out.NextOffset, err
+}
 
 type ConsumeOut struct {
 	NextOffset int64               `json:"next_offset"`
@@ -36,19 +80,6 @@ type ConsumeMessage struct {
 	Time   time.Time
 	Key    []byte
 	Value  []byte
-}
-
-type GetOut struct {
-	Encoding string  `json:"encoding"`
-	Offset   int64   `json:"offset"`
-	Time     int64   `json:"time"`
-	Key      *string `json:"key,omitempty"`
-	Value    *string `json:"value,omitempty"`
-}
-
-type GetByKeyIn struct {
-	Encoding string  `json:"encoding"`
-	Key      *string `json:"key"`
 }
 
 type consumeOpts struct {
@@ -131,58 +162,20 @@ func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int
 		return 0, nil, err
 	}
 
-	var msgs []ConsumeMessage
-	for _, msg := range out.Messages {
-		k, err := coder.DecodeData(msg.Key)
-		if err != nil {
-			return 0, nil, err
-		}
-		v, err := coder.DecodeData(msg.Value)
+	var msgs = make([]ConsumeMessage, len(out.Messages))
+	for i, outMsg := range out.Messages {
+		msg, err := outMsg.Decode(coder)
 		if err != nil {
 			return 0, nil, err
 		}
 
-		msgs = append(msgs, ConsumeMessage{
-			Offset: msg.Offset,
-			Time:   coder.DecodeTime(msg.Time),
-			Key:    k,
-			Value:  v,
-		})
+		msgs[i] = msg
 	}
 
 	return out.NextOffset, msgs, err
 }
 
-func (c *Client) Get(ctx context.Context, id LogID, offset int64) (ConsumeMessage, error) {
-	var out GetOut
-	err := c.httpGet(ctx, fmt.Sprintf("message/%s?offset=%d&encoding=base64", id, offset), &out)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-
-	return out.Decode()
-}
-
-func (c *Client) GetByKey(ctx context.Context, id LogID, key []byte) (ConsumeMessage, error) {
-	coder := EncodingBase64
-	var out GetOut
-	err := c.httpPost(ctx, fmt.Sprintf("message/%s/key", id), GetByKeyIn{
-		Encoding: coder.String(),
-		Key:      coder.EncodeData(key),
-	}, &out)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-
-	return out.Decode()
-}
-
-func (out GetOut) Decode() (ConsumeMessage, error) {
-	coder, err := ParseMessageEncoding(out.Encoding)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-
+func (out ConsumeMessageOut) Decode(coder MessageEncoding) (ConsumeMessage, error) {
 	k, err := coder.DecodeData(out.Key)
 	if err != nil {
 		return ConsumeMessage{}, err

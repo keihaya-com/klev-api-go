@@ -8,6 +8,7 @@ type Subject string
 
 var (
 	SubjectLogs            Subject = "logs"
+	SubjectMessages        Subject = "messages"
 	SubjectOffsets         Subject = "offsets"
 	SubjectTokens          Subject = "tokens"
 	SubjectIngressWebhooks Subject = "ingress_webhooks"
@@ -15,7 +16,8 @@ var (
 )
 
 var AllSubjects = []Subject{
-	SubjectLogs, SubjectOffsets, SubjectTokens,
+	SubjectLogs, SubjectMessages,
+	SubjectOffsets, SubjectTokens,
 	SubjectIngressWebhooks, SubjectEgressWebhooks,
 }
 
@@ -38,23 +40,25 @@ var (
 	ActionStatus Action = "status"
 )
 
+var defaultActions = []Action{
+	ActionList,
+	ActionCreate,
+	ActionGet,
+	ActionDelete,
+}
+
 func (s Subject) Actions() []Action {
-	var actions = []Action{
-		ActionList,
-		ActionCreate,
-		ActionGet,
-		ActionUpdate,
-		ActionDelete,
-	}
 	switch s {
-	case SubjectLogs:
-		actions = append(actions, ActionPublish, ActionConsume)
-	case SubjectEgressWebhooks:
-		actions = append(actions, ActionRotate, ActionStatus)
+	case SubjectMessages:
+		return []Action{ActionPublish, ActionConsume}
+	case SubjectOffsets:
+		return append(defaultActions, ActionUpdate)
 	case SubjectIngressWebhooks:
-		actions = append(actions, ActionRotate)
+		return append(defaultActions, ActionRotate)
+	case SubjectEgressWebhooks:
+		return append(defaultActions, ActionRotate, ActionStatus)
 	}
-	return actions
+	return defaultActions
 }
 
 func ACLSubject(subject Subject) string {
