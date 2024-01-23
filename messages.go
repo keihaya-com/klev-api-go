@@ -117,6 +117,14 @@ func ConsumeOffset(offset int64) ConsumeOpt {
 	}
 }
 
+func ConsumeOldest() ConsumeOpt {
+	return ConsumeOffset(OffsetOldest)
+}
+
+func ConsumeNewest() ConsumeOpt {
+	return ConsumeOffset(OffsetNewest)
+}
+
 func ConsumeOffsetID(offsetID OffsetID) ConsumeOpt {
 	return func(opts consumeOpts) consumeOpts {
 		opts.offsetID = &offsetID

@@ -39,13 +39,14 @@ type EgressWebhookStatus struct {
 	InactiveReason string `json:"inactive_reason,omitempty"`
 
 	AvailableOffset int64 `json:"available_offset"`
-	NextOffset      int64 `json:"next_offset"`
 
-	DeliverOffset   int64  `json:"deliver_offset"`
-	DeliverTime     int64  `json:"deliver_time,omitempty"`
-	DeliverResp     string `json:"deliver_resp,omitempty"`
-	DeliverError    string `json:"deliver_error,omitempty"`
-	NextDeliverTime int64  `json:"next_deliver_time,omitempty"`
+	DeliverOffset int64  `json:"deliver_offset"`
+	DeliverTime   int64  `json:"deliver_time,omitempty"`
+	DeliverResp   string `json:"deliver_resp,omitempty"`
+	DeliverError  string `json:"deliver_error,omitempty"`
+
+	NextDeliverOffset int64 `json:"next_deliver_offset"`
+	NextDeliverTime   int64 `json:"next_deliver_time,omitempty"`
 }
 
 func (c *Client) EgressWebhooksList(ctx context.Context) ([]EgressWebhook, error) {
