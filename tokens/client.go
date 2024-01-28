@@ -20,7 +20,7 @@ type Tokens struct {
 	Tokens []Token `json:"tokens,omitempty"`
 }
 
-type TokenCreate struct {
+type CreateParams struct {
 	Metadata string   `json:"metadata"`
 	ACL      []string `json:"acl"`
 }
@@ -41,7 +41,7 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]Token, error) {
 	return out.Tokens, err
 }
 
-func (c *Client) Create(ctx context.Context, in TokenCreate) (Token, error) {
+func (c *Client) Create(ctx context.Context, in CreateParams) (Token, error) {
 	var out Token
 	err := c.H.Post(ctx, fmt.Sprintf("tokens"), in, &out)
 	return out, err

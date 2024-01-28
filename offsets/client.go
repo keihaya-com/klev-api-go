@@ -22,12 +22,12 @@ type Offsets struct {
 	Offsets []Offset `json:"offsets,omitempty"`
 }
 
-type OffsetCreate struct {
+type CreateParams struct {
 	LogID    logs.LogID `json:"log_id"`
 	Metadata string     `json:"metadata"`
 }
 
-type OffsetSet struct {
+type SetParams struct {
 	Value         int64  `json:"value"`
 	ValueMetadata string `json:"value_metadata"`
 }
@@ -48,7 +48,7 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]Offset, error) {
 	return out.Offsets, err
 }
 
-func (c *Client) Create(ctx context.Context, in OffsetCreate) (Offset, error) {
+func (c *Client) Create(ctx context.Context, in CreateParams) (Offset, error) {
 	var out Offset
 	err := c.H.Post(ctx, fmt.Sprintf("offsets"), in, &out)
 	return out, err
@@ -61,13 +61,13 @@ func (c *Client) Get(ctx context.Context, id OffsetID) (Offset, error) {
 }
 
 func (c *Client) Set(ctx context.Context, id OffsetID, value int64, valueMetadata string) (Offset, error) {
-	return c.SetRaw(ctx, id, OffsetSet{
+	return c.SetRaw(ctx, id, SetParams{
 		Value:         value,
 		ValueMetadata: valueMetadata,
 	})
 }
 
-func (c *Client) SetRaw(ctx context.Context, id OffsetID, in OffsetSet) (Offset, error) {
+func (c *Client) SetRaw(ctx context.Context, id OffsetID, in SetParams) (Offset, error) {
 	var out Offset
 	err := c.H.Post(ctx, fmt.Sprintf("offset/%s", id), in, &out)
 	return out, err

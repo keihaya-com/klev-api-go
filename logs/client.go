@@ -23,7 +23,7 @@ type Logs struct {
 	Logs []Log `json:"logs"`
 }
 
-type LogCreate struct {
+type CreateParams struct {
 	Metadata       string `json:"metadata"`
 	Compacting     bool   `json:"compacting"`
 	TrimBytes      int64  `json:"trim_bytes"`
@@ -48,7 +48,7 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]Log, error) {
 	return out.Logs, err
 }
 
-func (c *Client) Create(ctx context.Context, in LogCreate) (Log, error) {
+func (c *Client) Create(ctx context.Context, in CreateParams) (Log, error) {
 	var out Log
 	err := c.H.Post(ctx, fmt.Sprintf("logs"), in, &out)
 	return out, err

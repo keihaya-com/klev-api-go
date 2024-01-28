@@ -22,14 +22,14 @@ type Filters struct {
 	Filters []Filter `json:"filters,omitempty"`
 }
 
-type FilterCreate struct {
+type CreateParams struct {
 	Metadata   string     `json:"metadata"`
 	SourceID   logs.LogID `json:"source_id"`
 	TargetID   logs.LogID `json:"target_id"`
 	Expression string     `json:"expression"`
 }
 
-type FilterStatus struct {
+type Status struct {
 	FilterID FilterID `json:"filter_id"`
 
 	Active         bool   `json:"active"`
@@ -61,7 +61,7 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]Filter, error) {
 	return out.Filters, err
 }
 
-func (c *Client) Create(ctx context.Context, in FilterCreate) (Filter, error) {
+func (c *Client) Create(ctx context.Context, in CreateParams) (Filter, error) {
 	var out Filter
 	err := c.H.Post(ctx, fmt.Sprintf("filters"), in, &out)
 	return out, err
@@ -73,8 +73,8 @@ func (c *Client) Get(ctx context.Context, id FilterID) (Filter, error) {
 	return out, err
 }
 
-func (c *Client) Status(ctx context.Context, id FilterID) (FilterStatus, error) {
-	var out FilterStatus
+func (c *Client) Status(ctx context.Context, id FilterID) (Status, error) {
+	var out Status
 	err := c.H.Get(ctx, fmt.Sprintf("filter/%s/status", id), &out)
 	return out, err
 }

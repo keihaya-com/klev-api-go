@@ -21,14 +21,14 @@ type IngressWebhooks struct {
 	Items []IngressWebhook `json:"items"`
 }
 
-type IngressWebhookCreate struct {
+type CreateParams struct {
 	LogID    logs.LogID `json:"log_id"`
 	Metadata string     `json:"metadata"`
 	Type     string     `json:"type"`
 	Secret   string     `json:"secret"`
 }
 
-type IngressWebhookRotate struct {
+type RotateParams struct {
 	Secret string `json:"secret"`
 }
 
@@ -48,7 +48,7 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]IngressWebhook, e
 	return out.Items, err
 }
 
-func (c *Client) Create(ctx context.Context, in IngressWebhookCreate) (IngressWebhook, error) {
+func (c *Client) Create(ctx context.Context, in CreateParams) (IngressWebhook, error) {
 	var out IngressWebhook
 	err := c.H.Post(ctx, fmt.Sprintf("ingress_webhooks"), in, &out)
 	return out, err
@@ -61,10 +61,10 @@ func (c *Client) Get(ctx context.Context, id IngressWebhookID) (IngressWebhook, 
 }
 
 func (c *Client) Rotate(ctx context.Context, id IngressWebhookID, secret string) (IngressWebhook, error) {
-	return c.RotateRaw(ctx, id, IngressWebhookRotate{secret})
+	return c.RotateRaw(ctx, id, RotateParams{secret})
 }
 
-func (c *Client) RotateRaw(ctx context.Context, id IngressWebhookID, in IngressWebhookRotate) (IngressWebhook, error) {
+func (c *Client) RotateRaw(ctx context.Context, id IngressWebhookID, in RotateParams) (IngressWebhook, error) {
 	var out IngressWebhook
 	err := c.H.Patch(ctx, fmt.Sprintf("ingress_webhook/%s/secret", id), in, &out)
 	return out, err
