@@ -1,4 +1,4 @@
-package api
+package client
 
 import (
 	"bytes"
@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/klev-dev/klev-api-go/errors"
 )
 
 // Config is used to configure a client instance
@@ -25,29 +27,28 @@ func NewConfig(token string) Config {
 	}
 }
 
-// Client wraps interactions with klev api
-type Client struct {
-	baseURL string
-	token   string
-	client  *http.Client
+type HTTP interface {
+	Get(ctx context.Context, path string, out any) error
+	Post(ctx context.Context, path string, in any, out any) error
+	Patch(ctx context.Context, path string, in any, out any) error
+	Delete(ctx context.Context, path string, out any) error
 }
 
-// New create a new client from a config
-func New(cfg Config) *Client {
-	return &Client{
+func New(cfg Config) HTTP {
+	return &httpClient{
 		baseURL: cfg.BaseURL,
 		token:   cfg.Token,
 		client:  cfg.Client,
 	}
 }
 
-func (c *Client) Paths(ctx context.Context) (map[string]string, error) {
-	var out map[string]string
-	err := c.httpGet(ctx, "", &out)
-	return out, err
+type httpClient struct {
+	baseURL string
+	token   string
+	client  *http.Client
 }
 
-func (c *Client) httpGet(ctx context.Context, path string, out interface{}) error {
+func (c *httpClient) Get(ctx context.Context, path string, out any) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
@@ -55,18 +56,18 @@ func (c *Client) httpGet(ctx context.Context, path string, out interface{}) erro
 		return fmt.Errorf("could not prepare HTTP get: %w", err)
 	}
 
-	return c.httpDo(req, out)
+	return c.do(req, out)
 }
 
-func (c *Client) httpPost(ctx context.Context, path string, in interface{}, out interface{}) error {
-	return c.httpUpdate(ctx, http.MethodPost, path, in, out)
+func (c *httpClient) Post(ctx context.Context, path string, in any, out any) error {
+	return c.update(ctx, http.MethodPost, path, in, out)
 }
 
-func (c *Client) httpPatch(ctx context.Context, path string, in interface{}, out interface{}) error {
-	return c.httpUpdate(ctx, http.MethodPatch, path, in, out)
+func (c *httpClient) Patch(ctx context.Context, path string, in any, out any) error {
+	return c.update(ctx, http.MethodPatch, path, in, out)
 }
 
-func (c *Client) httpUpdate(ctx context.Context, method string, path string, in interface{}, out interface{}) error {
+func (c *httpClient) update(ctx context.Context, method string, path string, in any, out any) error {
 	bin, err := json.Marshal(in)
 	if err != nil {
 		return fmt.Errorf("could not marshal json: %w", err)
@@ -79,10 +80,10 @@ func (c *Client) httpUpdate(ctx context.Context, method string, path string, in 
 		return fmt.Errorf("could not prepare HTTP post: %w", err)
 	}
 
-	return c.httpDo(req, out)
+	return c.do(req, out)
 }
 
-func (c *Client) httpDelete(ctx context.Context, path string, out interface{}) error {
+func (c *httpClient) Delete(ctx context.Context, path string, out any) error {
 	target := fmt.Sprintf("%s/%s", c.baseURL, path)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, target, nil)
@@ -90,14 +91,14 @@ func (c *Client) httpDelete(ctx context.Context, path string, out interface{}) e
 		return fmt.Errorf("could not prepare HTTP delete: %w", err)
 	}
 
-	return c.httpDo(req, out)
+	return c.do(req, out)
 }
 
-func (c *Client) httpDo(req *http.Request, out interface{}) error {
+func (c *httpClient) do(req *http.Request, out any) error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return fmt.Errorf("could not execute request: %w", err)
 	}
@@ -109,7 +110,7 @@ func (c *Client) httpDo(req *http.Request, out interface{}) error {
 	}
 
 	if resp.StatusCode >= 400 {
-		var eout ErrorOut
+		var eout errors.APIError
 		err = json.Unmarshal(bout, &eout)
 		if err != nil {
 			return fmt.Errorf("could not unmarshal error: %w", err)

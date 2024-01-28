@@ -1,66 +1,14 @@
-package api
+package messages
 
 import (
 	"context"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/klev-dev/klev-api-go/logs"
+	"github.com/klev-dev/klev-api-go/offsets"
 )
-
-type PublishIn struct {
-	Encoding string             `json:"encoding"`
-	Messages []PublishMessageIn `json:"messages"`
-}
-
-type PublishMessageIn struct {
-	Time  *int64  `json:"time"`
-	Key   *string `json:"key"`
-	Value *string `json:"value"`
-}
-
-type PublishOut struct {
-	NextOffset int64 `json:"next_offset"`
-}
-
-type PublishMessage struct {
-	Time  time.Time
-	Key   []byte
-	Value []byte
-}
-
-func NewPublishMessage(key, value string) PublishMessage {
-	return PublishMessage{Key: []byte(key), Value: []byte(value)}
-}
-
-func NewPublishMessageKey(key string) PublishMessage {
-	return PublishMessage{Key: []byte(key)}
-}
-
-func NewPublishMessageValue(value string) PublishMessage {
-	return PublishMessage{Value: []byte(value)}
-}
-
-func (c *Client) Publish(ctx context.Context, id LogID, messages []PublishMessage) (int64, error) {
-	coder := EncodingBase64
-	in := PublishIn{
-		Encoding: coder.String(),
-	}
-	for _, msg := range messages {
-		in.Messages = append(in.Messages, PublishMessageIn{
-			Time:  coder.EncodeTimeOpt(msg.Time),
-			Key:   coder.EncodeData(msg.Key),
-			Value: coder.EncodeData(msg.Value),
-		})
-	}
-
-	return c.PublishRaw(ctx, id, in)
-}
-
-func (c *Client) PublishRaw(ctx context.Context, id LogID, in PublishIn) (int64, error) {
-	var out PublishOut
-	err := c.httpPost(ctx, fmt.Sprintf("messages/%s", id), in, &out)
-	return out.NextOffset, err
-}
 
 type ConsumeOut struct {
 	NextOffset int64               `json:"next_offset"`
@@ -84,7 +32,7 @@ type ConsumeMessage struct {
 
 type consumeOpts struct {
 	offset   *int64
-	offsetID *OffsetID
+	offsetID *offsets.OffsetID
 	sz       *int32
 	poll     *time.Duration
 	encoding MessageEncoding
@@ -125,7 +73,7 @@ func ConsumeNewest() ConsumeOpt {
 	return ConsumeOffset(OffsetNewest)
 }
 
-func ConsumeOffsetID(offsetID OffsetID) ConsumeOpt {
+func ConsumeOffsetID(offsetID offsets.OffsetID) ConsumeOpt {
 	return func(opts consumeOpts) consumeOpts {
 		opts.offsetID = &offsetID
 		return opts
@@ -153,14 +101,14 @@ func ConsumeEncoding(enc MessageEncoding) ConsumeOpt {
 	}
 }
 
-func (c *Client) Consume(ctx context.Context, id LogID, opts ...ConsumeOpt) (int64, []ConsumeMessage, error) {
+func (c *Client) Consume(ctx context.Context, id logs.LogID, opts ...ConsumeOpt) (int64, []ConsumeMessage, error) {
 	copts := consumeOpts{encoding: EncodingBase64}
 	for _, opt := range opts {
 		copts = opt(copts)
 	}
 
 	var out ConsumeOut
-	err := c.httpGet(ctx, fmt.Sprintf("messages/%s?%s", id, copts.query()), &out)
+	err := c.H.Get(ctx, fmt.Sprintf("messages/%s?%s", id, copts.query()), &out)
 	if err != nil {
 		return 0, nil, err
 	}

@@ -1,4 +1,4 @@
-package api
+package ingress_validate
 
 import (
 	"crypto/hmac"
@@ -12,35 +12,36 @@ import (
 	"time"
 
 	"github.com/klev-dev/kleverr"
+	"github.com/klev-dev/klev-api-go/messages"
 )
 
-var retMessage = kleverr.Ret1[ConsumeMessage]
+var retMessage = kleverr.Ret1[messages.ConsumeMessage]
 
-func IngressWebhookKlevValidateMessage(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (ConsumeMessage, error) {
+func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (messages.ConsumeMessage, error) {
 	if r.Header.Get("Content-Type") != "application/json" {
 		return retMessage(ErrKlevInvalidContentTypeJson())
 	}
 
-	payload, err := ingressWebhookKlevValidate(w, r, now, secret)
+	payload, err := validate(w, r, now, secret)
 	if err != nil {
 		return retMessage(err)
 	}
 
-	var out GetOut
+	var out messages.GetOut
 	if err := json.Unmarshal(payload, &out); err != nil {
 		return retMessage(err)
 	}
 	return out.Decode()
 }
 
-func IngressWebhookKlevValidateData(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
+func Data(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
 	if r.Header.Get("Content-Type") != "application/octet-stream" {
 		return nil, ErrKlevInvalidContentTypeOctet()
 	}
-	return ingressWebhookKlevValidate(w, r, now, secret)
+	return validate(w, r, now, secret)
 }
 
-func ingressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
+func validate(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
 	r.Body = http.MaxBytesReader(w, r.Body, 128*1024)
 	payload, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -89,7 +90,7 @@ func ingressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func
 		return nil, ErrKlevSignatureMissing(hs)
 	}
 
-	expectedSig := IngressWebhookKlevSignature(ts, payload, secret)
+	expectedSig := Signature(ts, payload, secret)
 
 	for _, sig := range sigs {
 		if hmac.Equal(expectedSig, sig) {
@@ -100,7 +101,7 @@ func ingressWebhookKlevValidate(w http.ResponseWriter, r *http.Request, now func
 	return nil, ErrKlevSignatureMismatch()
 }
 
-func IngressWebhookKlevSignature(ts string, payload []byte, secret string) []byte {
+func Signature(ts string, payload []byte, secret string) []byte {
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte(ts))
 	mac.Write([]byte("."))

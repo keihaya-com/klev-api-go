@@ -1,4 +1,4 @@
-package api
+package acl
 
 import (
 	"fmt"
@@ -6,24 +6,26 @@ import (
 
 type Subject string
 
-var (
+const (
+	SubjectEgressWebhooks  Subject = "egress_webhooks"
+	SubjectFilters         Subject = "filters"
+	SubjectIngressWebhooks Subject = "ingress_webhooks"
 	SubjectLogs            Subject = "logs"
 	SubjectMessages        Subject = "messages"
 	SubjectOffsets         Subject = "offsets"
 	SubjectTokens          Subject = "tokens"
-	SubjectIngressWebhooks Subject = "ingress_webhooks"
-	SubjectEgressWebhooks  Subject = "egress_webhooks"
 )
 
 var AllSubjects = []Subject{
+	SubjectEgressWebhooks, SubjectFilters,
+	SubjectIngressWebhooks,
 	SubjectLogs, SubjectMessages,
 	SubjectOffsets, SubjectTokens,
-	SubjectIngressWebhooks, SubjectEgressWebhooks,
 }
 
 type Action string
 
-var (
+const (
 	// Generic
 	ActionList   Action = "list"
 	ActionCreate Action = "create"
@@ -57,6 +59,8 @@ func (s Subject) Actions() []Action {
 		return append(defaultActions, ActionRotate)
 	case SubjectEgressWebhooks:
 		return append(defaultActions, ActionRotate, ActionStatus)
+	case SubjectFilters:
+		return append(defaultActions, ActionStatus)
 	}
 	return defaultActions
 }
