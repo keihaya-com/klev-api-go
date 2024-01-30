@@ -3,15 +3,15 @@ package paths
 import (
 	"context"
 
-	"github.com/klev-dev/klev-api-go/client"
+	"github.com/klev-dev/klev-api-go"
 )
 
 type Client struct {
-	H client.HTTP
+	H klev.HTTP
 }
 
-func New(cfg client.Config) *Client {
-	return &Client{client.New(cfg)}
+func New(cfg klev.Config) *Client {
+	return &Client{klev.New(cfg)}
 }
 
 func (c *Client) Get(ctx context.Context) (map[string]string, error) {

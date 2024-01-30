@@ -1,7 +1,7 @@
 package clients
 
 import (
-	"github.com/klev-dev/klev-api-go/client"
+	"github.com/klev-dev/klev-api-go"
 	"github.com/klev-dev/klev-api-go/egress_webhooks"
 	"github.com/klev-dev/klev-api-go/filters"
 	"github.com/klev-dev/klev-api-go/ingress_webhooks"
@@ -25,8 +25,8 @@ type Clients struct {
 }
 
 // New create a new clients from a config
-func New(cfg client.Config) *Clients {
-	c := client.New(cfg)
+func New(cfg klev.Config) *Clients {
+	c := klev.New(cfg)
 	return &Clients{
 		EgressWebhooks:  &egress_webhooks.Client{c},
 		Filters:         &filters.Client{c},

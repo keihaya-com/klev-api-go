@@ -5,15 +5,14 @@ import (
 	"fmt"
 
 	"github.com/klev-dev/klev-api-go"
-	"github.com/klev-dev/klev-api-go/client"
 )
 
 type Client struct {
-	H client.HTTP
+	H klev.HTTP
 }
 
-func New(cfg client.Config) *Client {
-	return &Client{client.New(cfg)}
+func New(cfg klev.Config) *Client {
+	return &Client{klev.New(cfg)}
 }
 
 func (c *Client) List(ctx context.Context) ([]klev.Filter, error) {
