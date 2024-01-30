@@ -2,13 +2,13 @@
 package ingress_validate
 
 import (
-	"github.com/klev-dev/klev-api-go/errors"
+	"github.com/klev-dev/klev-api-go"
 
 	"fmt"
 )
 
 func ErrKlevNotSigned() error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0001",
 		Message: "Missing klev signature header",
 		Details: "'X-Klev-Signature' header is missing",
@@ -16,7 +16,7 @@ func ErrKlevNotSigned() error {
 }
 
 func ErrKlevTimestampInvalid(ts string) error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0002",
 		Message: "Invalid timestamp",
 		Details: fmt.Sprintf("'%s' is not a valid timestamp", ts),
@@ -24,7 +24,7 @@ func ErrKlevTimestampInvalid(ts string) error {
 }
 
 func ErrKlevTimestampExpired(ts string) error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0003",
 		Message: "Expired timestamp",
 		Details: fmt.Sprintf("'%s' is no longer valid, too old", ts),
@@ -32,7 +32,7 @@ func ErrKlevTimestampExpired(ts string) error {
 }
 
 func ErrKlevSignatureTimeMissing(h string) error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0004",
 		Message: "Signature timestamp missing",
 		Details: fmt.Sprintf("'X-Klev-Signature' header is missing timestamp: %s", h),
@@ -40,7 +40,7 @@ func ErrKlevSignatureTimeMissing(h string) error {
 }
 
 func ErrKlevSignatureMissing(h string) error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0005",
 		Message: "Signature missing",
 		Details: fmt.Sprintf("'X-Klev-Signature' header is missing signature: %s", h),
@@ -48,7 +48,7 @@ func ErrKlevSignatureMissing(h string) error {
 }
 
 func ErrKlevSignatureMismatch() error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0006",
 		Message: "Signature mismatch",
 		Details: "Message signature did not match the expected signature",
@@ -56,7 +56,7 @@ func ErrKlevSignatureMismatch() error {
 }
 
 func ErrKlevInvalidContentTypeJson() error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0007",
 		Message: "Invalid content type",
 		Details: "'Content-Type: application/json' header is required",
@@ -64,7 +64,7 @@ func ErrKlevInvalidContentTypeJson() error {
 }
 
 func ErrKlevInvalidContentTypeOctet() error {
-	return &errors.APIError{
+	return &klev.APIError{
 		Code:    "ERR_KLEV_WEBHOOKS_KLEV_0008",
 		Message: "Invalid content type",
 		Details: "'Content-Type: application/octet-stream' header is required",

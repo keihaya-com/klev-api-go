@@ -12,12 +12,12 @@ import (
 	"time"
 
 	"github.com/klev-dev/kleverr"
-	"github.com/klev-dev/klev-api-go/messages"
+	"github.com/klev-dev/klev-api-go"
 )
 
-var retMessage = kleverr.Ret1[messages.ConsumeMessage]
+var retMessage = kleverr.Ret1[klev.ConsumeMessage]
 
-func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (messages.ConsumeMessage, error) {
+func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (klev.ConsumeMessage, error) {
 	if r.Header.Get("Content-Type") != "application/json" {
 		return retMessage(ErrKlevInvalidContentTypeJson())
 	}
@@ -27,7 +27,7 @@ func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secre
 		return retMessage(err)
 	}
 
-	var out messages.GetOut
+	var out klev.GetOut
 	if err := json.Unmarshal(payload, &out); err != nil {
 		return retMessage(err)
 	}

@@ -4,83 +4,50 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/klev-dev/klev-api-go"
 	"github.com/klev-dev/klev-api-go/client"
-	"github.com/klev-dev/klev-api-go/logs"
 )
-
-type FilterID string
-
-type Filter struct {
-	FilterID   FilterID   `json:"filter_id"`
-	Metadata   string     `json:"metadata"`
-	Source     logs.LogID `json:"source_id"`
-	Target     logs.LogID `json:"target_id"`
-	Expression string     `json:"expression"`
-}
-
-type Filters struct {
-	Filters []Filter `json:"filters,omitempty"`
-}
-
-type CreateParams struct {
-	Metadata   string     `json:"metadata"`
-	SourceID   logs.LogID `json:"source_id"`
-	TargetID   logs.LogID `json:"target_id"`
-	Expression string     `json:"expression"`
-}
-
-type Status struct {
-	FilterID FilterID `json:"filter_id"`
-
-	Active         bool   `json:"active"`
-	InactiveReason string `json:"inactive_reason,omitempty"`
-
-	AvailableOffset int64 `json:"available_offset"`
-
-	DeliverOffset int64  `json:"deliver_offset"`
-	DeliverTime   int64  `json:"deliver_time,omitempty"`
-	DeliverError  string `json:"deliver_error,omitempty"`
-
-	NextDeliverOffset int64 `json:"next_deliver_offset"`
-	NextDeliverTime   int64 `json:"next_deliver_time,omitempty"`
-}
 
 type Client struct {
 	H client.HTTP
 }
 
-func (c *Client) List(ctx context.Context) ([]Filter, error) {
-	var out Filters
+func New(cfg client.Config) *Client {
+	return &Client{client.New(cfg)}
+}
+
+func (c *Client) List(ctx context.Context) ([]klev.Filter, error) {
+	var out klev.Filters
 	err := c.H.Get(ctx, fmt.Sprintf("filters"), &out)
 	return out.Filters, err
 }
 
-func (c *Client) Find(ctx context.Context, metadata string) ([]Filter, error) {
-	var out Filters
+func (c *Client) Find(ctx context.Context, metadata string) ([]klev.Filter, error) {
+	var out klev.Filters
 	err := c.H.Get(ctx, fmt.Sprintf("filters?metadata=%s", metadata), &out)
 	return out.Filters, err
 }
 
-func (c *Client) Create(ctx context.Context, in CreateParams) (Filter, error) {
-	var out Filter
+func (c *Client) Create(ctx context.Context, in klev.FilterCreateParams) (klev.Filter, error) {
+	var out klev.Filter
 	err := c.H.Post(ctx, fmt.Sprintf("filters"), in, &out)
 	return out, err
 }
 
-func (c *Client) Get(ctx context.Context, id FilterID) (Filter, error) {
-	var out Filter
+func (c *Client) Get(ctx context.Context, id klev.FilterID) (klev.Filter, error) {
+	var out klev.Filter
 	err := c.H.Get(ctx, fmt.Sprintf("filter/%s", id), &out)
 	return out, err
 }
 
-func (c *Client) Status(ctx context.Context, id FilterID) (Status, error) {
-	var out Status
+func (c *Client) Status(ctx context.Context, id klev.FilterID) (klev.FilterStatus, error) {
+	var out klev.FilterStatus
 	err := c.H.Get(ctx, fmt.Sprintf("filter/%s/status", id), &out)
 	return out, err
 }
 
-func (c *Client) Delete(ctx context.Context, id FilterID) (Filter, error) {
-	var out Filter
+func (c *Client) Delete(ctx context.Context, id klev.FilterID) (klev.Filter, error) {
+	var out klev.Filter
 	err := c.H.Delete(ctx, fmt.Sprintf("filter/%s", id), &out)
 	return out, err
 }

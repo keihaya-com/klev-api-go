@@ -1,4 +1,4 @@
-package api
+package clients
 
 import (
 	"github.com/klev-dev/klev-api-go/client"

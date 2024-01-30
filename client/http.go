@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/klev-dev/klev-api-go/errors"
+	"github.com/klev-dev/klev-api-go"
 )
 
 // Config is used to configure a client instance
@@ -21,7 +21,7 @@ type Config struct {
 // NewConfig creates new client configuration with a token
 func NewConfig(token string) Config {
 	return Config{
-		BaseURL: "https://api.klev.dev",
+		BaseURL: "https://klev.klev.dev",
 		Token:   token,
 		Client:  http.DefaultClient,
 	}
@@ -110,7 +110,7 @@ func (c *httpClient) do(req *http.Request, out any) error {
 	}
 
 	if resp.StatusCode >= 400 {
-		var eout errors.APIError
+		var eout klev.APIError
 		err = json.Unmarshal(bout, &eout)
 		if err != nil {
 			return fmt.Errorf("could not unmarshal error: %w", err)
