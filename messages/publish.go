@@ -21,13 +21,14 @@ func (c *Client) Publish(ctx context.Context, id klev.LogID, messages []klev.Pub
 		})
 	}
 
-	return c.PublishRaw(ctx, id, in)
+	out, err := c.PublishRaw(ctx, id, in)
+	return out.NextOffset, err
 }
 
-func (c *Client) PublishRaw(ctx context.Context, id klev.LogID, in klev.PublishIn) (int64, error) {
+func (c *Client) PublishRaw(ctx context.Context, id klev.LogID, in klev.PublishIn) (klev.PublishOut, error) {
 	var out klev.PublishOut
 	err := c.H.Post(ctx, fmt.Sprintf("messages/%s", id), in, &out)
-	return out.NextOffset, err
+	return out, err
 }
 
 func (c *Client) Post(ctx context.Context, id klev.LogID, t time.Time, key []byte, value []byte) (int64, error) {
@@ -39,11 +40,12 @@ func (c *Client) Post(ctx context.Context, id klev.LogID, t time.Time, key []byt
 		Value:    coder.EncodeData(value),
 	}
 
-	return c.PostRaw(ctx, id, in)
+	out, err := c.PostRaw(ctx, id, in)
+	return out.NextOffset, err
 }
 
-func (c *Client) PostRaw(ctx context.Context, id klev.LogID, in klev.PostIn) (int64, error) {
+func (c *Client) PostRaw(ctx context.Context, id klev.LogID, in klev.PostIn) (klev.PostOut, error) {
 	var out klev.PostOut
 	err := c.H.Post(ctx, fmt.Sprintf("message/%s", id), in, &out)
-	return out.NextOffset, err
+	return out, err
 }

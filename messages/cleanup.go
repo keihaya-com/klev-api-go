@@ -13,6 +13,11 @@ func (c *Client) Cleanup(ctx context.Context, id klev.LogID, opts ...klev.Cleanu
 	for _, opt := range opts {
 		in = opt(in)
 	}
+	out, err := c.CleanupRaw(ctx, id, in)
+	return out.Size, err
+}
+
+func (c *Client) CleanupRaw(ctx context.Context, id klev.LogID, in klev.CleanupIn) (klev.CleanupOut, error) {
 	query := queryCleanup(in)
 
 	var path = fmt.Sprintf("messages/%s", id)
@@ -22,7 +27,7 @@ func (c *Client) Cleanup(ctx context.Context, id klev.LogID, opts ...klev.Cleanu
 
 	var out klev.CleanupOut
 	err := c.H.Delete(ctx, path, &out)
-	return out.Size, err
+	return out, err
 }
 
 func queryCleanup(c klev.CleanupIn) string {
