@@ -39,6 +39,12 @@ func (c *Client) Get(ctx context.Context, id klev.LogID) (klev.Log, error) {
 	return out, err
 }
 
+func (c *Client) Stats(ctx context.Context, id klev.LogID) (klev.LogStats, error) {
+	var out klev.LogStats
+	err := c.H.Get(ctx, fmt.Sprintf("log/%s/stats", id), &out)
+	return out, err
+}
+
 func (c *Client) Delete(ctx context.Context, id klev.LogID) (klev.Log, error) {
 	var out klev.Log
 	err := c.H.Delete(ctx, fmt.Sprintf("log/%s", id), &out)

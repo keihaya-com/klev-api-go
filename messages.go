@@ -185,3 +185,52 @@ type GetByKeyIn struct {
 	Encoding string  `json:"encoding"`
 	Key      *string `json:"key"`
 }
+
+type CleanupOpt func(opts CleanupIn) CleanupIn
+
+func CleanupTrimAge(age time.Duration) CleanupOpt {
+	return func(opts CleanupIn) CleanupIn {
+		opts.TrimSeconds = int64(age / time.Second)
+		return opts
+	}
+}
+
+func CleanupTrimSize(size int64) CleanupOpt {
+	return func(opts CleanupIn) CleanupIn {
+		opts.TrimSize = size
+		return opts
+	}
+}
+
+func CleanupTrimCount(count int64) CleanupOpt {
+	return func(opts CleanupIn) CleanupIn {
+		opts.TrimCount = count
+		return opts
+	}
+}
+
+func CleanupCompactAge(age time.Duration) CleanupOpt {
+	return func(opts CleanupIn) CleanupIn {
+		opts.CompactSeconds = int64(age / time.Second)
+		return opts
+	}
+}
+
+func CleanupExpireAge(age time.Duration) CleanupOpt {
+	return func(opts CleanupIn) CleanupIn {
+		opts.ExpireSeconds = int64(age / time.Second)
+		return opts
+	}
+}
+
+type CleanupIn struct {
+	TrimSeconds    int64 `json:"trim_seconds"`
+	TrimSize       int64 `json:"trim_size"`
+	TrimCount      int64 `json:"trim_count"`
+	CompactSeconds int64 `json:"compact_seconds"`
+	ExpireSeconds  int64 `json:"expire_seconds"`
+}
+
+type CleanupOut struct {
+	Size int64 `json:"size"`
+}

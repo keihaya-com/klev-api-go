@@ -36,6 +36,7 @@ const (
 	// Messages
 	ActionPublish Action = "publish"
 	ActionConsume Action = "consume"
+	ActionCleanup Action = "cleanup"
 
 	// Webhooks
 	ActionRotate Action = "rotate"
@@ -52,7 +53,7 @@ var defaultActions = []Action{
 func (s Subject) Actions() []Action {
 	switch s {
 	case SubjectMessages:
-		return []Action{ActionPublish, ActionConsume}
+		return []Action{ActionPublish, ActionConsume, ActionCleanup}
 	case SubjectOffsets:
 		return append(defaultActions, ActionUpdate)
 	case SubjectIngressWebhooks:
