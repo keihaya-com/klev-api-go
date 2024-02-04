@@ -16,10 +16,15 @@ type EgressWebhooks struct {
 }
 
 type EgressWebhookCreateParams struct {
-	Metadata    string `json:"metadata"`
+	Metadata    string `json:"metadata,omitempty"`
 	LogID       LogID  `json:"log_id"`
 	Destination string `json:"destination"`
 	Payload     string `json:"payload"`
+}
+
+type EgressWebhookUpdateParams struct {
+	Metadata    *string `json:"metadata,omitempty"`
+	Destination *string `json:"destination,omitempty"`
 }
 
 type EgressWebhookRotateParams struct {

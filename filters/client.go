@@ -45,6 +45,12 @@ func (c *Client) Status(ctx context.Context, id klev.FilterID) (klev.FilterStatu
 	return out, err
 }
 
+func (c *Client) UpdateRaw(ctx context.Context, id klev.FilterID, in klev.FilterUpdateParams) (klev.Filter, error) {
+	var out klev.Filter
+	err := c.H.Patch(ctx, fmt.Sprintf("filter/%s", id), in, &out)
+	return out, err
+}
+
 func (c *Client) Delete(ctx context.Context, id klev.FilterID) (klev.Filter, error) {
 	var out klev.Filter
 	err := c.H.Delete(ctx, fmt.Sprintf("filter/%s", id), &out)

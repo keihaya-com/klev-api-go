@@ -40,15 +40,15 @@ func (c *Client) Get(ctx context.Context, id klev.OffsetID) (klev.Offset, error)
 }
 
 func (c *Client) Set(ctx context.Context, id klev.OffsetID, value int64, valueMetadata string) (klev.Offset, error) {
-	return c.SetRaw(ctx, id, klev.OffsetSetParams{
-		Value:         value,
-		ValueMetadata: valueMetadata,
+	return c.UpdateRaw(ctx, id, klev.OffsetUpdateParams{
+		Value:         &value,
+		ValueMetadata: &valueMetadata,
 	})
 }
 
-func (c *Client) SetRaw(ctx context.Context, id klev.OffsetID, in klev.OffsetSetParams) (klev.Offset, error) {
+func (c *Client) UpdateRaw(ctx context.Context, id klev.OffsetID, in klev.OffsetUpdateParams) (klev.Offset, error) {
 	var out klev.Offset
-	err := c.H.Post(ctx, fmt.Sprintf("offset/%s", id), in, &out)
+	err := c.H.Patch(ctx, fmt.Sprintf("offset/%s", id), in, &out)
 	return out, err
 }
 

@@ -57,6 +57,12 @@ func (c *Client) Status(ctx context.Context, id klev.EgressWebhookID) (klev.Egre
 	return out, err
 }
 
+func (c *Client) UpdateRaw(ctx context.Context, id klev.EgressWebhookID, in klev.EgressWebhookUpdateParams) (klev.EgressWebhook, error) {
+	var out klev.EgressWebhook
+	err := c.H.Patch(ctx, fmt.Sprintf("egress_webhook/%s", id), in, &out)
+	return out, err
+}
+
 func (c *Client) Delete(ctx context.Context, id klev.EgressWebhookID) (klev.EgressWebhook, error) {
 	var out klev.EgressWebhook
 	err := c.H.Delete(ctx, fmt.Sprintf("egress_webhook/%s", id), &out)

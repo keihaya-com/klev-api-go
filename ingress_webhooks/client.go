@@ -40,12 +40,12 @@ func (c *Client) Get(ctx context.Context, id klev.IngressWebhookID) (klev.Ingres
 }
 
 func (c *Client) Rotate(ctx context.Context, id klev.IngressWebhookID, secret string) (klev.IngressWebhook, error) {
-	return c.RotateRaw(ctx, id, klev.IngressWebhookRotateParams{secret})
+	return c.UpdateRaw(ctx, id, klev.IngressWebhookUpdateParams{Secret: &secret})
 }
 
-func (c *Client) RotateRaw(ctx context.Context, id klev.IngressWebhookID, in klev.IngressWebhookRotateParams) (klev.IngressWebhook, error) {
+func (c *Client) UpdateRaw(ctx context.Context, id klev.IngressWebhookID, in klev.IngressWebhookUpdateParams) (klev.IngressWebhook, error) {
 	var out klev.IngressWebhook
-	err := c.H.Patch(ctx, fmt.Sprintf("ingress_webhook/%s/secret", id), in, &out)
+	err := c.H.Patch(ctx, fmt.Sprintf("ingress_webhook/%s", id), in, &out)
 	return out, err
 }
 

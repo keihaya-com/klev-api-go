@@ -11,14 +11,19 @@ type Filter struct {
 }
 
 type Filters struct {
-	Filters []Filter `json:"filters,omitempty"`
+	Filters []Filter `json:"filters"`
 }
 
 type FilterCreateParams struct {
-	Metadata   string `json:"metadata"`
+	Metadata   string `json:"metadata,omitempty"`
 	SourceID   LogID  `json:"source_id"`
 	TargetID   LogID  `json:"target_id"`
 	Expression string `json:"expression"`
+}
+
+type FilterUpdateParams struct {
+	Metadata   *string `json:"metadata,omitempty"`
+	Expression *string `json:"expression,omitempty"`
 }
 
 type FilterStatus struct {

@@ -45,6 +45,12 @@ func (c *Client) Stats(ctx context.Context, id klev.LogID) (klev.LogStats, error
 	return out, err
 }
 
+func (c *Client) UpdateRaw(ctx context.Context, id klev.LogID, in klev.LogUpdateParams) (klev.Log, error) {
+	var out klev.Log
+	err := c.H.Patch(ctx, fmt.Sprintf("log/%s", id), in, &out)
+	return out, err
+}
+
 func (c *Client) Delete(ctx context.Context, id klev.LogID) (klev.Log, error) {
 	var out klev.Log
 	err := c.H.Delete(ctx, fmt.Sprintf("log/%s", id), &out)

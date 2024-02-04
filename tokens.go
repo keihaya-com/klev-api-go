@@ -10,10 +10,15 @@ type Token struct {
 }
 
 type Tokens struct {
-	Tokens []Token `json:"tokens,omitempty"`
+	Tokens []Token `json:"tokens"`
 }
 
 type TokenCreateParams struct {
-	Metadata string   `json:"metadata"`
-	ACL      []string `json:"acl"`
+	Metadata string   `json:"metadata,omitempty"`
+	ACL      []string `json:"acl,omitempty"`
+}
+
+type TokenUpdateParams struct {
+	Metadata *string   `json:"metadata,omitempty"`
+	ACL      *[]string `json:"acl,omitempty"`
 }

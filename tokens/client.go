@@ -39,6 +39,12 @@ func (c *Client) Get(ctx context.Context, id klev.TokenID) (klev.Token, error) {
 	return out, err
 }
 
+func (c *Client) UpdateRaw(ctx context.Context, id klev.TokenID, in klev.TokenUpdateParams) (klev.Token, error) {
+	var out klev.Token
+	err := c.H.Patch(ctx, fmt.Sprintf("token/%s", id), in, &out)
+	return out, err
+}
+
 func (c *Client) Delete(ctx context.Context, id klev.TokenID) (klev.Token, error) {
 	var out klev.Token
 	err := c.H.Delete(ctx, fmt.Sprintf("token/%s", id), &out)
