@@ -2,6 +2,13 @@ package klev
 
 type IngressWebhookID string
 
+func ParseIngressWebhookID(id string) (IngressWebhookID, error) {
+	if err := validate(id, "iwh"); err != nil {
+		return IngressWebhookID(""), err
+	}
+	return IngressWebhookID(id), nil
+}
+
 type IngressWebhook struct {
 	WebhookID IngressWebhookID `json:"webhook_id"`
 	Metadata  string           `json:"metadata,omitempty"`

@@ -2,15 +2,20 @@
 package klev
 
 const (
-	ErrMessagePathInvalid              = "ERR_KLEV_MESSAGES_API_0001"
-	ErrMessageLenParameterInvalid      = "ERR_KLEV_MESSAGES_API_0002"
-	ErrMessageEncodingInvalid          = "ERR_KLEV_MESSAGES_API_0003"
-	ErrMessageEncodingParameterInvalid = "ERR_KLEV_MESSAGES_API_0004"
-	ErrMessageEncodingFieldInvalid     = "ERR_KLEV_MESSAGES_API_0005"
-	ErrMessagePollParameterInvalid     = "ERR_KLEV_MESSAGES_API_0006"
-	ErrMessageOffsetIDParameterInvalid = "ERR_KLEV_MESSAGES_API_0007"
-	ErrMessageOffsetParameterInvalid   = "ERR_KLEV_MESSAGES_API_0008"
-	ErrMessageOffsetLogMismatch        = "ERR_KLEV_MESSAGES_API_0009"
+	ErrMessagePathInvalid                    = "ERR_KLEV_MESSAGES_API_0001"
+	ErrMessageLenParameterInvalid            = "ERR_KLEV_MESSAGES_API_0002"
+	ErrMessageEncodingInvalid                = "ERR_KLEV_MESSAGES_API_0003"
+	ErrMessageEncodingParameterInvalid       = "ERR_KLEV_MESSAGES_API_0004"
+	ErrMessageEncodingFieldInvalid           = "ERR_KLEV_MESSAGES_API_0005"
+	ErrMessagePollParameterInvalid           = "ERR_KLEV_MESSAGES_API_0006"
+	ErrMessageOffsetIDParameterInvalid       = "ERR_KLEV_MESSAGES_API_0007"
+	ErrMessageOffsetParameterInvalid         = "ERR_KLEV_MESSAGES_API_0008"
+	ErrMessageOffsetLogMismatch              = "ERR_KLEV_MESSAGES_API_0009"
+	ErrMessageTrimSecondsParameterInvalid    = "ERR_KLEV_MESSAGES_API_0010"
+	ErrMessageTrimSizeParameterInvalid       = "ERR_KLEV_MESSAGES_API_0011"
+	ErrMessageTrimCountParameterInvalid      = "ERR_KLEV_MESSAGES_API_0012"
+	ErrMessageCompactSecondsParameterInvalid = "ERR_KLEV_MESSAGES_API_0013"
+	ErrMessageExpireSecondsParameterInvalid  = "ERR_KLEV_MESSAGES_API_0014"
 )
 
 func IsErrMessagePathInvalid(err error) bool {
@@ -47,4 +52,24 @@ func IsErrMessageOffsetParameterInvalid(err error) bool {
 
 func IsErrMessageOffsetLogMismatch(err error) bool {
 	return IsError(err, ErrMessageOffsetLogMismatch)
+}
+
+func IsErrMessageTrimSecondsParameterInvalid(err error) bool {
+	return IsError(err, ErrMessageTrimSecondsParameterInvalid)
+}
+
+func IsErrMessageTrimSizeParameterInvalid(err error) bool {
+	return IsError(err, ErrMessageTrimSizeParameterInvalid)
+}
+
+func IsErrMessageTrimCountParameterInvalid(err error) bool {
+	return IsError(err, ErrMessageTrimCountParameterInvalid)
+}
+
+func IsErrMessageCompactSecondsParameterInvalid(err error) bool {
+	return IsError(err, ErrMessageCompactSecondsParameterInvalid)
+}
+
+func IsErrMessageExpireSecondsParameterInvalid(err error) bool {
+	return IsError(err, ErrMessageExpireSecondsParameterInvalid)
 }

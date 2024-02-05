@@ -2,6 +2,13 @@ package klev
 
 type TokenID string
 
+func ParseTokenID(id string) (TokenID, error) {
+	if err := validate(id, "tok"); err != nil {
+		return TokenID(""), err
+	}
+	return TokenID(id), nil
+}
+
 type Token struct {
 	TokenID  TokenID  `json:"token_id"`
 	Metadata string   `json:"metadata"`

@@ -2,6 +2,13 @@ package klev
 
 type LogID string
 
+func ParseLogID(id string) (LogID, error) {
+	if err := validate(id, "log"); err != nil {
+		return LogID(""), err
+	}
+	return LogID(id), nil
+}
+
 type Log struct {
 	LogID          LogID  `json:"log_id"`
 	Metadata       string `json:"metadata,omitempty"`
