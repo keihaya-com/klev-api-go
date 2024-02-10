@@ -7,13 +7,13 @@ import (
 func validate(str, pref string) error {
 	prefix, suffix, found := strings.Cut(str, "_")
 	if !found {
-		return ErrInvalidIDFormat(str)
+		return ErrIDInvalidFormat(str)
 	}
 	if prefix != pref {
-		return ErrInvalidIDPrefix(str, prefix, pref)
+		return ErrIDInvalidPrefix(str, prefix, pref)
 	}
 	if len(suffix) != 27 {
-		return ErrInvalidIDSuffixLen(str, suffix)
+		return ErrIDInvalidSuffixLen(str, suffix)
 	}
 	for _, ch := range suffix {
 		switch {
@@ -21,7 +21,7 @@ func validate(str, pref string) error {
 		case ch >= 'A' && ch <= 'Z':
 		case ch >= 'a' && ch <= 'z':
 		default:
-			return ErrInvalidIDSuffix(str, suffix)
+			return ErrIDInvalidSuffix(str, suffix)
 		}
 	}
 	return nil

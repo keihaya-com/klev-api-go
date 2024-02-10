@@ -1,14 +1,5 @@
 package klev
 
-type EgressWebhookID string
-
-func ParseEgressWebhookID(id string) (EgressWebhookID, error) {
-	if err := validate(id, "ewh"); err != nil {
-		return EgressWebhookID(""), err
-	}
-	return EgressWebhookID(id), nil
-}
-
 type EgressWebhook struct {
 	WebhookID   EgressWebhookID `json:"webhook_id"`
 	Metadata    string          `json:"metadata"`

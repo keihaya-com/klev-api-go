@@ -6,13 +6,12 @@ import (
 )
 
 type APIError struct {
-	Code    string `json:"error,omitempty"`
+	Code    string `json:"code,omitempty"`
 	Message string `json:"message,omitempty"`
-	Details string `json:"details,omitempty"`
 }
 
 func (e *APIError) Error() string {
-	return fmt.Sprintf("(%s) %s\n\n%s", e.Code, e.Message, e.Details)
+	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
 func GetError(err error) *APIError {

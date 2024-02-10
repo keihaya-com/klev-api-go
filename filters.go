@@ -1,14 +1,5 @@
 package klev
 
-type FilterID string
-
-func ParseFilterID(id string) (FilterID, error) {
-	if err := validate(id, "trf"); err != nil {
-		return FilterID(""), err
-	}
-	return FilterID(id), nil
-}
-
 type Filter struct {
 	FilterID   FilterID `json:"filter_id"`
 	Metadata   string   `json:"metadata"`

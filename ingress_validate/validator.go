@@ -19,7 +19,7 @@ var retMessage = kleverr.Ret1[klev.ConsumeMessage]
 
 func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) (klev.ConsumeMessage, error) {
 	if r.Header.Get("Content-Type") != "application/json" {
-		return retMessage(ErrKlevInvalidContentTypeJson())
+		return retMessage(ErrKlevContentTypeJsonInvalid())
 	}
 
 	payload, err := validate(w, r, now, secret)
@@ -36,7 +36,7 @@ func Message(w http.ResponseWriter, r *http.Request, now func() time.Time, secre
 
 func Data(w http.ResponseWriter, r *http.Request, now func() time.Time, secret string) ([]byte, error) {
 	if r.Header.Get("Content-Type") != "application/octet-stream" {
-		return nil, ErrKlevInvalidContentTypeOctet()
+		return nil, ErrKlevContentTypeOctetInvalid()
 	}
 	return validate(w, r, now, secret)
 }
