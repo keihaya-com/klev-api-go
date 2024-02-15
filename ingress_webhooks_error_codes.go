@@ -2,24 +2,24 @@
 package klev
 
 const (
-	ErrIngressWebhookCountLimited    = "ingress-webhook-count-limited"
-	ErrIngressWebhookMetadataLimited = "ingress-webhook-metadata-limited"
-	ErrIngressWebhookNotFound        = "ingress-webhook-not-found"
-	ErrIngressWebhookTypeInvalid     = "ingress-webhook-type-invalid"
+	ErrIngressWebhookCountLimitedCode    = "ingress-webhook-count-limited"
+	ErrIngressWebhookMetadataLimitedCode = "ingress-webhook-metadata-limited"
+	ErrIngressWebhookNotFoundCode        = "ingress-webhook-not-found"
+	ErrIngressWebhookTypeInvalidCode     = "ingress-webhook-type-invalid"
 )
 
 func IsErrIngressWebhookCountLimited(err error) bool {
-	return IsError(err, ErrIngressWebhookCountLimited)
+	return IsError(err, ErrIngressWebhookCountLimitedCode)
 }
 
 func IsErrIngressWebhookMetadataLimited(err error) bool {
-	return IsError(err, ErrIngressWebhookMetadataLimited)
+	return IsError(err, ErrIngressWebhookMetadataLimitedCode)
 }
 
 func IsErrIngressWebhookNotFound(err error) bool {
-	return IsError(err, ErrIngressWebhookNotFound)
+	return IsError(err, ErrIngressWebhookNotFoundCode)
 }
 
 func IsErrIngressWebhookTypeInvalid(err error) bool {
-	return IsError(err, ErrIngressWebhookTypeInvalid)
+	return IsError(err, ErrIngressWebhookTypeInvalidCode)
 }

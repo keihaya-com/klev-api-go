@@ -2,9 +2,9 @@
 package klev
 
 const (
-	ErrLogPathInvalid = "log-path-invalid"
+	ErrLogPathInvalidCode = "log-path-invalid"
 )
 
 func IsErrLogPathInvalid(err error) bool {
-	return IsError(err, ErrLogPathInvalid)
+	return IsError(err, ErrLogPathInvalidCode)
 }

@@ -2,14 +2,14 @@
 package klev
 
 const (
-	ErrMaintenanceError = "maintenance-error"
-	ErrServerError      = "server-error"
+	ErrMaintenanceErrorCode = "maintenance-error"
+	ErrServerErrorCode      = "server-error"
 )
 
 func IsErrMaintenanceError(err error) bool {
-	return IsError(err, ErrMaintenanceError)
+	return IsError(err, ErrMaintenanceErrorCode)
 }
 
 func IsErrServerError(err error) bool {
-	return IsError(err, ErrServerError)
+	return IsError(err, ErrServerErrorCode)
 }

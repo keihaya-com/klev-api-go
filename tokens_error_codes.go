@@ -2,34 +2,39 @@
 package klev
 
 const (
-	ErrTokenAuthInvalid       = "token-auth-invalid"
-	ErrTokenAuthInvalidFormat = "token-auth-invalid-format"
-	ErrTokenAuthInvalidID     = "token-auth-invalid-id"
-	ErrTokenCountLimited      = "token-count-limited"
-	ErrTokenMetadataLimited   = "token-metadata-limited"
-	ErrTokenNotFound          = "token-not-found"
+	ErrTokenACLItemLimitedCode    = "token-acl-item-limited"
+	ErrTokenAuthInvalidCode       = "token-auth-invalid"
+	ErrTokenAuthInvalidFormatCode = "token-auth-invalid-format"
+	ErrTokenAuthInvalidIDCode     = "token-auth-invalid-id"
+	ErrTokenCountLimitedCode      = "token-count-limited"
+	ErrTokenMetadataLimitedCode   = "token-metadata-limited"
+	ErrTokenNotFoundCode          = "token-not-found"
 )
 
+func IsErrTokenACLItemLimited(err error) bool {
+	return IsError(err, ErrTokenACLItemLimitedCode)
+}
+
 func IsErrTokenAuthInvalid(err error) bool {
-	return IsError(err, ErrTokenAuthInvalid)
+	return IsError(err, ErrTokenAuthInvalidCode)
 }
 
 func IsErrTokenAuthInvalidFormat(err error) bool {
-	return IsError(err, ErrTokenAuthInvalidFormat)
+	return IsError(err, ErrTokenAuthInvalidFormatCode)
 }
 
 func IsErrTokenAuthInvalidID(err error) bool {
-	return IsError(err, ErrTokenAuthInvalidID)
+	return IsError(err, ErrTokenAuthInvalidIDCode)
 }
 
 func IsErrTokenCountLimited(err error) bool {
-	return IsError(err, ErrTokenCountLimited)
+	return IsError(err, ErrTokenCountLimitedCode)
 }
 
 func IsErrTokenMetadataLimited(err error) bool {
-	return IsError(err, ErrTokenMetadataLimited)
+	return IsError(err, ErrTokenMetadataLimitedCode)
 }
 
 func IsErrTokenNotFound(err error) bool {
-	return IsError(err, ErrTokenNotFound)
+	return IsError(err, ErrTokenNotFoundCode)
 }

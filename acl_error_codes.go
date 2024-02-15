@@ -2,59 +2,19 @@
 package klev
 
 const (
-	ErrACLActionInvalid               = "acl-action-invalid"
-	ErrACLActionInvalidObject         = "acl-action-invalid-object"
-	ErrACLItemFormatInvalid           = "acl-item-format-invalid"
-	ErrACLItemLimited                 = "acl-item-limited"
-	ErrACLObjectEgressWebhookInvalid  = "acl-object-egress-webhook-invalid"
-	ErrACLObjectFilterInvalid         = "acl-object-filter-invalid"
-	ErrACLObjectIngressWebhookInvalid = "acl-object-ingress-webhook-invalid"
-	ErrACLObjectLogInvalid            = "acl-object-log-invalid"
-	ErrACLObjectOffsetInvalid         = "acl-object-offset-invalid"
-	ErrACLObjectTokenInvalid          = "acl-object-token-invalid"
-	ErrACLSubjectInvalid              = "acl-subject-invalid"
+	ErrACLActionInvalidCode  = "acl-action-invalid"
+	ErrACLObjectMissingCode  = "acl-object-missing"
+	ErrACLSubjectInvalidCode = "acl-subject-invalid"
 )
 
 func IsErrACLActionInvalid(err error) bool {
-	return IsError(err, ErrACLActionInvalid)
+	return IsError(err, ErrACLActionInvalidCode)
 }
 
-func IsErrACLActionInvalidObject(err error) bool {
-	return IsError(err, ErrACLActionInvalidObject)
-}
-
-func IsErrACLItemFormatInvalid(err error) bool {
-	return IsError(err, ErrACLItemFormatInvalid)
-}
-
-func IsErrACLItemLimited(err error) bool {
-	return IsError(err, ErrACLItemLimited)
-}
-
-func IsErrACLObjectEgressWebhookInvalid(err error) bool {
-	return IsError(err, ErrACLObjectEgressWebhookInvalid)
-}
-
-func IsErrACLObjectFilterInvalid(err error) bool {
-	return IsError(err, ErrACLObjectFilterInvalid)
-}
-
-func IsErrACLObjectIngressWebhookInvalid(err error) bool {
-	return IsError(err, ErrACLObjectIngressWebhookInvalid)
-}
-
-func IsErrACLObjectLogInvalid(err error) bool {
-	return IsError(err, ErrACLObjectLogInvalid)
-}
-
-func IsErrACLObjectOffsetInvalid(err error) bool {
-	return IsError(err, ErrACLObjectOffsetInvalid)
-}
-
-func IsErrACLObjectTokenInvalid(err error) bool {
-	return IsError(err, ErrACLObjectTokenInvalid)
+func IsErrACLObjectMissing(err error) bool {
+	return IsError(err, ErrACLObjectMissingCode)
 }
 
 func IsErrACLSubjectInvalid(err error) bool {
-	return IsError(err, ErrACLSubjectInvalid)
+	return IsError(err, ErrACLSubjectInvalidCode)
 }

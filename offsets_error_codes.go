@@ -2,24 +2,24 @@
 package klev
 
 const (
-	ErrOffsetCountLimited         = "offset-count-limited"
-	ErrOffsetMetadataLimited      = "offset-metadata-limited"
-	ErrOffsetNotFound             = "offset-not-found"
-	ErrOffsetValueMetadataLimited = "offset-value-metadata-limited"
+	ErrOffsetCountLimitedCode         = "offset-count-limited"
+	ErrOffsetMetadataLimitedCode      = "offset-metadata-limited"
+	ErrOffsetNotFoundCode             = "offset-not-found"
+	ErrOffsetValueMetadataLimitedCode = "offset-value-metadata-limited"
 )
 
 func IsErrOffsetCountLimited(err error) bool {
-	return IsError(err, ErrOffsetCountLimited)
+	return IsError(err, ErrOffsetCountLimitedCode)
 }
 
 func IsErrOffsetMetadataLimited(err error) bool {
-	return IsError(err, ErrOffsetMetadataLimited)
+	return IsError(err, ErrOffsetMetadataLimitedCode)
 }
 
 func IsErrOffsetNotFound(err error) bool {
-	return IsError(err, ErrOffsetNotFound)
+	return IsError(err, ErrOffsetNotFoundCode)
 }
 
 func IsErrOffsetValueMetadataLimited(err error) bool {
-	return IsError(err, ErrOffsetValueMetadataLimited)
+	return IsError(err, ErrOffsetValueMetadataLimitedCode)
 }

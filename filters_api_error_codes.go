@@ -2,19 +2,19 @@
 package klev
 
 const (
-	ErrFilterPathInvalid          = "filter-path-invalid"
-	ErrFilterSourceIDFieldInvalid = "filter-source-id-field-invalid"
-	ErrFilterTargetIDFieldInvalid = "filter-target-id-field-invalid"
+	ErrFilterPathInvalidCode          = "filter-path-invalid"
+	ErrFilterSourceIDFieldInvalidCode = "filter-source-id-field-invalid"
+	ErrFilterTargetIDFieldInvalidCode = "filter-target-id-field-invalid"
 )
 
 func IsErrFilterPathInvalid(err error) bool {
-	return IsError(err, ErrFilterPathInvalid)
+	return IsError(err, ErrFilterPathInvalidCode)
 }
 
 func IsErrFilterSourceIDFieldInvalid(err error) bool {
-	return IsError(err, ErrFilterSourceIDFieldInvalid)
+	return IsError(err, ErrFilterSourceIDFieldInvalidCode)
 }
 
 func IsErrFilterTargetIDFieldInvalid(err error) bool {
-	return IsError(err, ErrFilterTargetIDFieldInvalid)
+	return IsError(err, ErrFilterTargetIDFieldInvalidCode)
 }

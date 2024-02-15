@@ -2,24 +2,24 @@
 package klev
 
 const (
-	ErrLogCompactExpireAgeInvalid = "log-compact-expire-age-invalid"
-	ErrLogCountLimited            = "log-count-limited"
-	ErrLogMetadataLimited         = "log-metadata-limited"
-	ErrLogNotFound                = "log-not-found"
+	ErrLogCompactExpireAgeInvalidCode = "log-compact-expire-age-invalid"
+	ErrLogCountLimitedCode            = "log-count-limited"
+	ErrLogMetadataLimitedCode         = "log-metadata-limited"
+	ErrLogNotFoundCode                = "log-not-found"
 )
 
 func IsErrLogCompactExpireAgeInvalid(err error) bool {
-	return IsError(err, ErrLogCompactExpireAgeInvalid)
+	return IsError(err, ErrLogCompactExpireAgeInvalidCode)
 }
 
 func IsErrLogCountLimited(err error) bool {
-	return IsError(err, ErrLogCountLimited)
+	return IsError(err, ErrLogCountLimitedCode)
 }
 
 func IsErrLogMetadataLimited(err error) bool {
-	return IsError(err, ErrLogMetadataLimited)
+	return IsError(err, ErrLogMetadataLimitedCode)
 }
 
 func IsErrLogNotFound(err error) bool {
-	return IsError(err, ErrLogNotFound)
+	return IsError(err, ErrLogNotFoundCode)
 }

@@ -2,29 +2,29 @@
 package klev
 
 const (
-	ErrFilterCompileFailed   = "filter-compile-failed"
-	ErrFilterCountLimited    = "filter-count-limited"
-	ErrFilterMetadataLimited = "filter-metadata-limited"
-	ErrFilterNotFound        = "filter-not-found"
-	ErrFilterTypeNotBool     = "filter-type-not-bool"
+	ErrFilterCompileFailedCode   = "filter-compile-failed"
+	ErrFilterCountLimitedCode    = "filter-count-limited"
+	ErrFilterMetadataLimitedCode = "filter-metadata-limited"
+	ErrFilterNotFoundCode        = "filter-not-found"
+	ErrFilterTypeNotBoolCode     = "filter-type-not-bool"
 )
 
 func IsErrFilterCompileFailed(err error) bool {
-	return IsError(err, ErrFilterCompileFailed)
+	return IsError(err, ErrFilterCompileFailedCode)
 }
 
 func IsErrFilterCountLimited(err error) bool {
-	return IsError(err, ErrFilterCountLimited)
+	return IsError(err, ErrFilterCountLimitedCode)
 }
 
 func IsErrFilterMetadataLimited(err error) bool {
-	return IsError(err, ErrFilterMetadataLimited)
+	return IsError(err, ErrFilterMetadataLimitedCode)
 }
 
 func IsErrFilterNotFound(err error) bool {
-	return IsError(err, ErrFilterNotFound)
+	return IsError(err, ErrFilterNotFoundCode)
 }
 
 func IsErrFilterTypeNotBool(err error) bool {
-	return IsError(err, ErrFilterTypeNotBool)
+	return IsError(err, ErrFilterTypeNotBoolCode)
 }

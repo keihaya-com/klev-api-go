@@ -2,24 +2,24 @@
 package klev
 
 const (
-	ErrEgressWebhookCountLimited    = "egress-webhook-count-limited"
-	ErrEgressWebhookMetadataLimited = "egress-webhook-metadata-limited"
-	ErrEgressWebhookNotFound        = "egress-webhook-not-found"
-	ErrEgressWebhookPayloadInvalid  = "egress-webhook-payload-invalid"
+	ErrEgressWebhookCountLimitedCode    = "egress-webhook-count-limited"
+	ErrEgressWebhookMetadataLimitedCode = "egress-webhook-metadata-limited"
+	ErrEgressWebhookNotFoundCode        = "egress-webhook-not-found"
+	ErrEgressWebhookPayloadInvalidCode  = "egress-webhook-payload-invalid"
 )
 
 func IsErrEgressWebhookCountLimited(err error) bool {
-	return IsError(err, ErrEgressWebhookCountLimited)
+	return IsError(err, ErrEgressWebhookCountLimitedCode)
 }
 
 func IsErrEgressWebhookMetadataLimited(err error) bool {
-	return IsError(err, ErrEgressWebhookMetadataLimited)
+	return IsError(err, ErrEgressWebhookMetadataLimitedCode)
 }
 
 func IsErrEgressWebhookNotFound(err error) bool {
-	return IsError(err, ErrEgressWebhookNotFound)
+	return IsError(err, ErrEgressWebhookNotFoundCode)
 }
 
 func IsErrEgressWebhookPayloadInvalid(err error) bool {
-	return IsError(err, ErrEgressWebhookPayloadInvalid)
+	return IsError(err, ErrEgressWebhookPayloadInvalidCode)
 }

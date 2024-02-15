@@ -2,74 +2,74 @@
 package klev
 
 const (
-	ErrMessageCompactSecondsParameterInvalid = "message-compact-seconds-parameter-invalid"
-	ErrMessageEncodingFieldInvalid           = "message-encoding-field-invalid"
-	ErrMessageEncodingInvalid                = "message-encoding-invalid"
-	ErrMessageEncodingParameterInvalid       = "message-encoding-parameter-invalid"
-	ErrMessageExpireSecondsParameterInvalid  = "message-expire-seconds-parameter-invalid"
-	ErrMessageLenParameterInvalid            = "message-len-parameter-invalid"
-	ErrMessageOffsetIDParameterInvalid       = "message-offset-id-parameter-invalid"
-	ErrMessageOffsetLogMismatch              = "message-offset-log-mismatch"
-	ErrMessageOffsetParameterInvalid         = "message-offset-parameter-invalid"
-	ErrMessagePathInvalid                    = "message-path-invalid"
-	ErrMessagePollParameterInvalid           = "message-poll-parameter-invalid"
-	ErrMessageTrimCountParameterInvalid      = "message-trim-count-parameter-invalid"
-	ErrMessageTrimSecondsParameterInvalid    = "message-trim-seconds-parameter-invalid"
-	ErrMessageTrimSizeParameterInvalid       = "message-trim-size-parameter-invalid"
+	ErrMessageCompactSecondsParameterInvalidCode = "message-compact-seconds-parameter-invalid"
+	ErrMessageEncodingFieldInvalidCode           = "message-encoding-field-invalid"
+	ErrMessageEncodingInvalidCode                = "message-encoding-invalid"
+	ErrMessageEncodingParameterInvalidCode       = "message-encoding-parameter-invalid"
+	ErrMessageExpireSecondsParameterInvalidCode  = "message-expire-seconds-parameter-invalid"
+	ErrMessageLenParameterInvalidCode            = "message-len-parameter-invalid"
+	ErrMessageOffsetIDParameterInvalidCode       = "message-offset-id-parameter-invalid"
+	ErrMessageOffsetLogMismatchCode              = "message-offset-log-mismatch"
+	ErrMessageOffsetParameterInvalidCode         = "message-offset-parameter-invalid"
+	ErrMessagePathInvalidCode                    = "message-path-invalid"
+	ErrMessagePollParameterInvalidCode           = "message-poll-parameter-invalid"
+	ErrMessageTrimCountParameterInvalidCode      = "message-trim-count-parameter-invalid"
+	ErrMessageTrimSecondsParameterInvalidCode    = "message-trim-seconds-parameter-invalid"
+	ErrMessageTrimSizeParameterInvalidCode       = "message-trim-size-parameter-invalid"
 )
 
 func IsErrMessageCompactSecondsParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageCompactSecondsParameterInvalid)
+	return IsError(err, ErrMessageCompactSecondsParameterInvalidCode)
 }
 
 func IsErrMessageEncodingFieldInvalid(err error) bool {
-	return IsError(err, ErrMessageEncodingFieldInvalid)
+	return IsError(err, ErrMessageEncodingFieldInvalidCode)
 }
 
 func IsErrMessageEncodingInvalid(err error) bool {
-	return IsError(err, ErrMessageEncodingInvalid)
+	return IsError(err, ErrMessageEncodingInvalidCode)
 }
 
 func IsErrMessageEncodingParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageEncodingParameterInvalid)
+	return IsError(err, ErrMessageEncodingParameterInvalidCode)
 }
 
 func IsErrMessageExpireSecondsParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageExpireSecondsParameterInvalid)
+	return IsError(err, ErrMessageExpireSecondsParameterInvalidCode)
 }
 
 func IsErrMessageLenParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageLenParameterInvalid)
+	return IsError(err, ErrMessageLenParameterInvalidCode)
 }
 
 func IsErrMessageOffsetIDParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageOffsetIDParameterInvalid)
+	return IsError(err, ErrMessageOffsetIDParameterInvalidCode)
 }
 
 func IsErrMessageOffsetLogMismatch(err error) bool {
-	return IsError(err, ErrMessageOffsetLogMismatch)
+	return IsError(err, ErrMessageOffsetLogMismatchCode)
 }
 
 func IsErrMessageOffsetParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageOffsetParameterInvalid)
+	return IsError(err, ErrMessageOffsetParameterInvalidCode)
 }
 
 func IsErrMessagePathInvalid(err error) bool {
-	return IsError(err, ErrMessagePathInvalid)
+	return IsError(err, ErrMessagePathInvalidCode)
 }
 
 func IsErrMessagePollParameterInvalid(err error) bool {
-	return IsError(err, ErrMessagePollParameterInvalid)
+	return IsError(err, ErrMessagePollParameterInvalidCode)
 }
 
 func IsErrMessageTrimCountParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageTrimCountParameterInvalid)
+	return IsError(err, ErrMessageTrimCountParameterInvalidCode)
 }
 
 func IsErrMessageTrimSecondsParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageTrimSecondsParameterInvalid)
+	return IsError(err, ErrMessageTrimSecondsParameterInvalidCode)
 }
 
 func IsErrMessageTrimSizeParameterInvalid(err error) bool {
-	return IsError(err, ErrMessageTrimSizeParameterInvalid)
+	return IsError(err, ErrMessageTrimSizeParameterInvalidCode)
 }

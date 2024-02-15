@@ -2,9 +2,9 @@
 package klev
 
 const (
-	ErrTokenPathInvalid = "token-path-invalid"
+	ErrTokenPathInvalidCode = "token-path-invalid"
 )
 
 func IsErrTokenPathInvalid(err error) bool {
-	return IsError(err, ErrTokenPathInvalid)
+	return IsError(err, ErrTokenPathInvalidCode)
 }

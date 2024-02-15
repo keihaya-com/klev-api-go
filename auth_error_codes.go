@@ -2,39 +2,39 @@
 package klev
 
 const (
-	ErrAuthenticationFailed       = "authentication-failed"
-	ErrAuthorizationFailed        = "authorization-failed"
-	ErrAuthorizationHeaderInvalid = "authorization-header-invalid"
-	ErrAuthorizationHeaderMissing = "authorization-header-missing"
-	ErrContentTypeInvalid         = "content-type-invalid"
-	ErrContentTypeMissing         = "content-type-missing"
-	ErrSubscriptionMissing        = "subscription-missing"
+	ErrAuthenticationFailedCode       = "authentication-failed"
+	ErrAuthorizationFailedCode        = "authorization-failed"
+	ErrAuthorizationHeaderInvalidCode = "authorization-header-invalid"
+	ErrAuthorizationHeaderMissingCode = "authorization-header-missing"
+	ErrContentTypeInvalidCode         = "content-type-invalid"
+	ErrContentTypeMissingCode         = "content-type-missing"
+	ErrSubscriptionMissingCode        = "subscription-missing"
 )
 
 func IsErrAuthenticationFailed(err error) bool {
-	return IsError(err, ErrAuthenticationFailed)
+	return IsError(err, ErrAuthenticationFailedCode)
 }
 
 func IsErrAuthorizationFailed(err error) bool {
-	return IsError(err, ErrAuthorizationFailed)
+	return IsError(err, ErrAuthorizationFailedCode)
 }
 
 func IsErrAuthorizationHeaderInvalid(err error) bool {
-	return IsError(err, ErrAuthorizationHeaderInvalid)
+	return IsError(err, ErrAuthorizationHeaderInvalidCode)
 }
 
 func IsErrAuthorizationHeaderMissing(err error) bool {
-	return IsError(err, ErrAuthorizationHeaderMissing)
+	return IsError(err, ErrAuthorizationHeaderMissingCode)
 }
 
 func IsErrContentTypeInvalid(err error) bool {
-	return IsError(err, ErrContentTypeInvalid)
+	return IsError(err, ErrContentTypeInvalidCode)
 }
 
 func IsErrContentTypeMissing(err error) bool {
-	return IsError(err, ErrContentTypeMissing)
+	return IsError(err, ErrContentTypeMissingCode)
 }
 
 func IsErrSubscriptionMissing(err error) bool {
-	return IsError(err, ErrSubscriptionMissing)
+	return IsError(err, ErrSubscriptionMissingCode)
 }

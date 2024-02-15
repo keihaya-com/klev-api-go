@@ -2,14 +2,14 @@
 package klev
 
 const (
-	ErrOffsetLogIDFieldInvalid = "offset-log-id-field-invalid"
-	ErrOffsetPathInvalid       = "offset-path-invalid"
+	ErrOffsetLogIDFieldInvalidCode = "offset-log-id-field-invalid"
+	ErrOffsetPathInvalidCode       = "offset-path-invalid"
 )
 
 func IsErrOffsetLogIDFieldInvalid(err error) bool {
-	return IsError(err, ErrOffsetLogIDFieldInvalid)
+	return IsError(err, ErrOffsetLogIDFieldInvalidCode)
 }
 
 func IsErrOffsetPathInvalid(err error) bool {
-	return IsError(err, ErrOffsetPathInvalid)
+	return IsError(err, ErrOffsetPathInvalidCode)
 }

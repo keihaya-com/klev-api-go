@@ -10,7 +10,7 @@ import (
 )
 
 func (c *Client) Consume(ctx context.Context, id klev.LogID, opts ...klev.ConsumeOpt) (int64, []klev.ConsumeMessage, error) {
-	copts := klev.ConsumeOpts{Encoding: klev.EncodingBase64}
+	copts := klev.ConsumeOpts{Encoding: klev.MessageEncodingBase64}
 	for _, opt := range opts {
 		copts = opt(copts)
 	}
@@ -21,10 +21,7 @@ func (c *Client) Consume(ctx context.Context, id klev.LogID, opts ...klev.Consum
 		return 0, nil, err
 	}
 
-	coder, err := klev.ParseMessageEncoding(out.Encoding)
-	if err != nil {
-		return 0, nil, err
-	}
+	coder := out.Encoding
 
 	var msgs = make([]klev.ConsumeMessage, len(out.Messages))
 	for i, outMsg := range out.Messages {
@@ -50,10 +47,10 @@ func (c *Client) GetByOffset(ctx context.Context, id klev.LogID, offset int64) (
 }
 
 func (c *Client) GetByKey(ctx context.Context, id klev.LogID, key []byte) (klev.ConsumeMessage, error) {
-	coder := klev.EncodingBase64
+	coder := klev.MessageEncodingBase64
 	var out klev.GetOut
 	err := c.H.Post(ctx, fmt.Sprintf("message/%s/key", id), klev.GetByKeyIn{
-		Encoding: coder.String(),
+		Encoding: coder,
 		Key:      coder.EncodeData(key),
 	}, &out)
 	if err != nil {

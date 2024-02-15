@@ -2,49 +2,49 @@
 package klev
 
 const (
-	ErrMessageConsumeLimited = "message-consume-limited"
-	ErrMessageKeyLimited     = "message-key-limited"
-	ErrMessageKeyNotFound    = "message-key-not-found"
-	ErrMessageNotCompacting  = "message-not-compacting"
-	ErrMessageOffsetInvalid  = "message-offset-invalid"
-	ErrMessageOffsetNotFound = "message-offset-not-found"
-	ErrMessagePollLimited    = "message-poll-limited"
-	ErrMessagePublishLimited = "message-publish-limited"
-	ErrMessageValueLimited   = "message-value-limited"
+	ErrMessageConsumeLimitedCode = "message-consume-limited"
+	ErrMessageKeyLimitedCode     = "message-key-limited"
+	ErrMessageKeyNotFoundCode    = "message-key-not-found"
+	ErrMessageNotCompactingCode  = "message-not-compacting"
+	ErrMessageOffsetInvalidCode  = "message-offset-invalid"
+	ErrMessageOffsetNotFoundCode = "message-offset-not-found"
+	ErrMessagePollLimitedCode    = "message-poll-limited"
+	ErrMessagePublishLimitedCode = "message-publish-limited"
+	ErrMessageValueLimitedCode   = "message-value-limited"
 )
 
 func IsErrMessageConsumeLimited(err error) bool {
-	return IsError(err, ErrMessageConsumeLimited)
+	return IsError(err, ErrMessageConsumeLimitedCode)
 }
 
 func IsErrMessageKeyLimited(err error) bool {
-	return IsError(err, ErrMessageKeyLimited)
+	return IsError(err, ErrMessageKeyLimitedCode)
 }
 
 func IsErrMessageKeyNotFound(err error) bool {
-	return IsError(err, ErrMessageKeyNotFound)
+	return IsError(err, ErrMessageKeyNotFoundCode)
 }
 
 func IsErrMessageNotCompacting(err error) bool {
-	return IsError(err, ErrMessageNotCompacting)
+	return IsError(err, ErrMessageNotCompactingCode)
 }
 
 func IsErrMessageOffsetInvalid(err error) bool {
-	return IsError(err, ErrMessageOffsetInvalid)
+	return IsError(err, ErrMessageOffsetInvalidCode)
 }
 
 func IsErrMessageOffsetNotFound(err error) bool {
-	return IsError(err, ErrMessageOffsetNotFound)
+	return IsError(err, ErrMessageOffsetNotFoundCode)
 }
 
 func IsErrMessagePollLimited(err error) bool {
-	return IsError(err, ErrMessagePollLimited)
+	return IsError(err, ErrMessagePollLimitedCode)
 }
 
 func IsErrMessagePublishLimited(err error) bool {
-	return IsError(err, ErrMessagePublishLimited)
+	return IsError(err, ErrMessagePublishLimitedCode)
 }
 
 func IsErrMessageValueLimited(err error) bool {
-	return IsError(err, ErrMessageValueLimited)
+	return IsError(err, ErrMessageValueLimitedCode)
 }

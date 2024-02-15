@@ -9,9 +9,9 @@ import (
 )
 
 func (c *Client) Publish(ctx context.Context, id klev.LogID, messages []klev.PublishMessage) (int64, error) {
-	coder := klev.EncodingBase64
+	coder := klev.MessageEncodingBase64
 	in := klev.PublishIn{
-		Encoding: coder.String(),
+		Encoding: coder,
 	}
 	for _, msg := range messages {
 		in.Messages = append(in.Messages, klev.PublishMessageIn{
@@ -32,9 +32,9 @@ func (c *Client) PublishRaw(ctx context.Context, id klev.LogID, in klev.PublishI
 }
 
 func (c *Client) Post(ctx context.Context, id klev.LogID, t time.Time, key []byte, value []byte) (int64, error) {
-	coder := klev.EncodingBase64
+	coder := klev.MessageEncodingBase64
 	in := klev.PostIn{
-		Encoding: coder.String(),
+		Encoding: coder,
 		Time:     coder.EncodeTimeOpt(t),
 		Key:      coder.EncodeData(key),
 		Value:    coder.EncodeData(value),

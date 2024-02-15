@@ -2,14 +2,14 @@
 package klev
 
 const (
-	ErrEgressWebhookLogIDFieldInvalid = "egress-webhook-log-id-field-invalid"
-	ErrEgressWebhookPathInvalid       = "egress-webhook-path-invalid"
+	ErrEgressWebhookLogIDFieldInvalidCode = "egress-webhook-log-id-field-invalid"
+	ErrEgressWebhookPathInvalidCode       = "egress-webhook-path-invalid"
 )
 
 func IsErrEgressWebhookLogIDFieldInvalid(err error) bool {
-	return IsError(err, ErrEgressWebhookLogIDFieldInvalid)
+	return IsError(err, ErrEgressWebhookLogIDFieldInvalidCode)
 }
 
 func IsErrEgressWebhookPathInvalid(err error) bool {
-	return IsError(err, ErrEgressWebhookPathInvalid)
+	return IsError(err, ErrEgressWebhookPathInvalidCode)
 }

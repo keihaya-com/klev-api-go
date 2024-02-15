@@ -2,14 +2,14 @@
 package klev
 
 const (
-	ErrIngressWebhookLogIDFieldInvalid = "ingress-webhook-log-id-field-invalid"
-	ErrIngressWebhookPathInvalid       = "ingress-webhook-path-invalid"
+	ErrIngressWebhookLogIDFieldInvalidCode = "ingress-webhook-log-id-field-invalid"
+	ErrIngressWebhookPathInvalidCode       = "ingress-webhook-path-invalid"
 )
 
 func IsErrIngressWebhookLogIDFieldInvalid(err error) bool {
-	return IsError(err, ErrIngressWebhookLogIDFieldInvalid)
+	return IsError(err, ErrIngressWebhookLogIDFieldInvalidCode)
 }
 
 func IsErrIngressWebhookPathInvalid(err error) bool {
-	return IsError(err, ErrIngressWebhookPathInvalid)
+	return IsError(err, ErrIngressWebhookPathInvalidCode)
 }

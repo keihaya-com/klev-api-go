@@ -2,19 +2,19 @@
 package klev
 
 const (
-	ErrJsonInvalid      = "json-invalid"
-	ErrMethodNotAllowed = "method-not-allowed"
-	ErrPathNotFound     = "path-not-found"
+	ErrJsonInvalidCode      = "json-invalid"
+	ErrMethodNotAllowedCode = "method-not-allowed"
+	ErrPathNotFoundCode     = "path-not-found"
 )
 
 func IsErrJsonInvalid(err error) bool {
-	return IsError(err, ErrJsonInvalid)
+	return IsError(err, ErrJsonInvalidCode)
 }
 
 func IsErrMethodNotAllowed(err error) bool {
-	return IsError(err, ErrMethodNotAllowed)
+	return IsError(err, ErrMethodNotAllowedCode)
 }
 
 func IsErrPathNotFound(err error) bool {
-	return IsError(err, ErrPathNotFound)
+	return IsError(err, ErrPathNotFoundCode)
 }

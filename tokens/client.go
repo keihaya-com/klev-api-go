@@ -27,10 +27,12 @@ func (c *Client) Find(ctx context.Context, metadata string) ([]klev.Token, error
 	return out.Tokens, err
 }
 
-func (c *Client) Create(ctx context.Context, in klev.TokenCreateParams) (klev.Token, error) {
+func (c *Client) Create(ctx context.Context, in klev.TokenCreateParams) (klev.Token, string, error) {
 	var out klev.Token
 	err := c.H.Post(ctx, fmt.Sprintf("tokens"), in, &out)
-	return out, err
+	bearer := out.Bearer
+	out.Bearer = ""
+	return out, bearer, err
 }
 
 func (c *Client) Get(ctx context.Context, id klev.TokenID) (klev.Token, error) {

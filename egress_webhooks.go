@@ -1,12 +1,12 @@
 package klev
 
 type EgressWebhook struct {
-	WebhookID   EgressWebhookID `json:"webhook_id"`
-	Metadata    string          `json:"metadata"`
-	LogID       LogID           `json:"log_id"`
-	Destination string          `json:"destination"`
-	Payload     string          `json:"payload"`
-	Secret      string          `json:"secret,omitempty"`
+	WebhookID   EgressWebhookID      `json:"webhook_id"`
+	Metadata    string               `json:"metadata"`
+	LogID       LogID                `json:"log_id"`
+	Destination string               `json:"destination"`
+	Payload     EgressWebhookPayload `json:"payload"`
+	Secret      string               `json:"secret,omitempty"`
 }
 
 type EgressWebhooks struct {
@@ -14,10 +14,10 @@ type EgressWebhooks struct {
 }
 
 type EgressWebhookCreateParams struct {
-	Metadata    string `json:"metadata,omitempty"`
-	LogID       LogID  `json:"log_id"`
-	Destination string `json:"destination"`
-	Payload     string `json:"payload"`
+	Metadata    string               `json:"metadata,omitempty"`
+	LogID       LogID                `json:"log_id"`
+	Destination string               `json:"destination"`
+	Payload     EgressWebhookPayload `json:"payload"`
 }
 
 type EgressWebhookUpdateParams struct {

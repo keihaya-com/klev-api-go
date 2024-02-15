@@ -16,14 +16,14 @@ const (
 )
 
 type PublishIn struct {
-	Encoding string             `json:"encoding"`
-	Messages []PublishMessageIn `json:"messages"`
+	Encoding MessageEncoding    `json:"encoding,omitempty"`
+	Messages []PublishMessageIn `json:"messages,omitempty"`
 }
 
 type PublishMessageIn struct {
-	Time  *int64  `json:"time"`
-	Key   *string `json:"key"`
-	Value *string `json:"value"`
+	Time  *int64  `json:"time,omitempty"`
+	Key   *string `json:"key,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
 type PublishOut struct {
@@ -49,10 +49,10 @@ func NewPublishMessageValue(value string) PublishMessage {
 }
 
 type PostIn struct {
-	Encoding string  `json:"encoding"`
-	Time     *int64  `json:"time"`
-	Key      *string `json:"key"`
-	Value    *string `json:"value"`
+	Encoding MessageEncoding `json:"encoding,omitempty"`
+	Time     *int64          `json:"time,omitempty"`
+	Key      *string         `json:"key,omitempty"`
+	Value    *string         `json:"value,omitempty"`
 }
 
 type PostOut struct {
@@ -114,7 +114,7 @@ func ConsumeEncoding(enc MessageEncoding) ConsumeOpt {
 
 type ConsumeOut struct {
 	NextOffset int64               `json:"next_offset"`
-	Encoding   string              `json:"encoding"`
+	Encoding   MessageEncoding     `json:"encoding,omitempty"`
 	Messages   []ConsumeMessageOut `json:"messages,omitempty"`
 }
 
@@ -151,39 +151,34 @@ func (out ConsumeMessageOut) Decode(coder MessageEncoding) (ConsumeMessage, erro
 }
 
 type GetOut struct {
-	Encoding string  `json:"encoding"`
-	Offset   int64   `json:"offset"`
-	Time     int64   `json:"time"`
-	Key      *string `json:"key,omitempty"`
-	Value    *string `json:"value,omitempty"`
+	Encoding MessageEncoding `json:"encoding,omitempty"`
+	Offset   int64           `json:"offset"`
+	Time     int64           `json:"time"`
+	Key      *string         `json:"key,omitempty"`
+	Value    *string         `json:"value,omitempty"`
 }
 
 func (out GetOut) Decode() (ConsumeMessage, error) {
-	coder, err := ParseMessageEncoding(out.Encoding)
+	k, err := out.Encoding.DecodeData(out.Key)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
-
-	k, err := coder.DecodeData(out.Key)
-	if err != nil {
-		return ConsumeMessage{}, err
-	}
-	v, err := coder.DecodeData(out.Value)
+	v, err := out.Encoding.DecodeData(out.Value)
 	if err != nil {
 		return ConsumeMessage{}, err
 	}
 
 	return ConsumeMessage{
 		Offset: out.Offset,
-		Time:   coder.DecodeTime(out.Time),
+		Time:   out.Encoding.DecodeTime(out.Time),
 		Key:    k,
 		Value:  v,
 	}, nil
 }
 
 type GetByKeyIn struct {
-	Encoding string  `json:"encoding"`
-	Key      *string `json:"key"`
+	Encoding MessageEncoding `json:"encoding,omitempty"`
+	Key      *string         `json:"key,omitempty"`
 }
 
 type CleanupOpt func(opts CleanupIn) CleanupIn
@@ -224,11 +219,11 @@ func CleanupExpireAge(age time.Duration) CleanupOpt {
 }
 
 type CleanupIn struct {
-	TrimSeconds    int64 `json:"trim_seconds"`
-	TrimSize       int64 `json:"trim_size"`
-	TrimCount      int64 `json:"trim_count"`
-	CompactSeconds int64 `json:"compact_seconds"`
-	ExpireSeconds  int64 `json:"expire_seconds"`
+	TrimSeconds    int64 `json:"trim_seconds,omitempty"`
+	TrimSize       int64 `json:"trim_size,omitempty"`
+	TrimCount      int64 `json:"trim_count,omitempty"`
+	CompactSeconds int64 `json:"compact_seconds,omitempty"`
+	ExpireSeconds  int64 `json:"expire_seconds,omitempty"`
 }
 
 type CleanupOut struct {

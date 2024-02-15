@@ -1,10 +1,10 @@
 package klev
 
 type IngressWebhook struct {
-	WebhookID IngressWebhookID `json:"webhook_id"`
-	Metadata  string           `json:"metadata,omitempty"`
-	LogID     LogID            `json:"log_id"`
-	Type      string           `json:"type"`
+	WebhookID IngressWebhookID   `json:"webhook_id"`
+	Metadata  string             `json:"metadata,omitempty"`
+	LogID     LogID              `json:"log_id"`
+	Type      IngressWebhookType `json:"type"`
 }
 
 type IngressWebhooks struct {
@@ -12,10 +12,10 @@ type IngressWebhooks struct {
 }
 
 type IngressWebhookCreateParams struct {
-	LogID    LogID  `json:"log_id"`
-	Metadata string `json:"metadata,omitempty"`
-	Type     string `json:"type"`
-	Secret   string `json:"secret"`
+	LogID    LogID              `json:"log_id"`
+	Metadata string             `json:"metadata,omitempty"`
+	Type     IngressWebhookType `json:"type"`
+	Secret   string             `json:"secret"`
 }
 
 type IngressWebhookUpdateParams struct {
