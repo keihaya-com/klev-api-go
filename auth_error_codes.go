@@ -8,7 +8,7 @@ const (
 	ErrAuthorizationHeaderMissingCode = "authorization-header-missing"
 	ErrContentTypeInvalidCode         = "content-type-invalid"
 	ErrContentTypeMissingCode         = "content-type-missing"
-	ErrSubscriptionMissingCode        = "subscription-missing"
+	ErrEmailNotVerifiedCode           = "email-not-verified"
 )
 
 func IsErrAuthenticationFailed(err error) bool {
@@ -35,6 +35,6 @@ func IsErrContentTypeMissing(err error) bool {
 	return IsError(err, ErrContentTypeMissingCode)
 }
 
-func IsErrSubscriptionMissing(err error) bool {
-	return IsError(err, ErrSubscriptionMissingCode)
+func IsErrEmailNotVerified(err error) bool {
+	return IsError(err, ErrEmailNotVerifiedCode)
 }

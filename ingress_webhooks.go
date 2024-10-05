@@ -8,7 +8,7 @@ type IngressWebhook struct {
 }
 
 type IngressWebhooks struct {
-	Items []IngressWebhook `json:"items"`
+	IngressWebhooks []IngressWebhook `json:"ingress_webhooks"`
 }
 
 type IngressWebhookCreateParams struct {

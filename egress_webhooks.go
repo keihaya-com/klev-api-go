@@ -10,7 +10,7 @@ type EgressWebhook struct {
 }
 
 type EgressWebhooks struct {
-	Items []EgressWebhook `json:"items"`
+	EgressWebhooks []EgressWebhook `json:"egress_webhooks"`
 }
 
 type EgressWebhookCreateParams struct {

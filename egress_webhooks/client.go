@@ -19,13 +19,13 @@ func New(cfg klev.Config) *Client {
 func (c *Client) List(ctx context.Context) ([]klev.EgressWebhook, error) {
 	var out klev.EgressWebhooks
 	err := c.H.Get(ctx, fmt.Sprintf("egress_webhooks"), &out)
-	return out.Items, err
+	return out.EgressWebhooks, err
 }
 
 func (c *Client) Find(ctx context.Context, metadata string) ([]klev.EgressWebhook, error) {
 	var out klev.EgressWebhooks
 	err := c.H.Get(ctx, fmt.Sprintf("egress_webhooks?metadata=%s", metadata), &out)
-	return out.Items, err
+	return out.EgressWebhooks, err
 }
 
 func (c *Client) Create(ctx context.Context, in klev.EgressWebhookCreateParams) (klev.EgressWebhook, error) {

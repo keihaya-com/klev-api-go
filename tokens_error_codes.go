@@ -3,6 +3,7 @@ package klev
 
 const (
 	ErrTokenACLItemLimitedCode    = "token-acl-item-limited"
+	ErrTokenACLNotAllowedCode     = "token-acl-not-allowed"
 	ErrTokenAuthInvalidCode       = "token-auth-invalid"
 	ErrTokenAuthInvalidFormatCode = "token-auth-invalid-format"
 	ErrTokenAuthInvalidIDCode     = "token-auth-invalid-id"
@@ -13,6 +14,10 @@ const (
 
 func IsErrTokenACLItemLimited(err error) bool {
 	return IsError(err, ErrTokenACLItemLimitedCode)
+}
+
+func IsErrTokenACLNotAllowed(err error) bool {
+	return IsError(err, ErrTokenACLNotAllowedCode)
 }
 
 func IsErrTokenAuthInvalid(err error) bool {
